@@ -7,6 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('hosts', '0001_initial'),
     ]
 
     operations = [
@@ -26,6 +27,8 @@ class Migration(migrations.Migration):
                 ('mobile', models.CharField(default=None, max_length=32, null=True, verbose_name='\u624b\u673a', blank=True)),
                 ('memo', models.TextField(default=None, null=True, verbose_name='\u5907\u6ce8', blank=True)),
                 ('date_joined', models.DateTimeField(auto_now_add=True)),
+                ('bind_hosts', models.ManyToManyField(to='hosts.BindHostToGroup', blank=True)),
+                ('host_groups', models.ManyToManyField(to='hosts.HostGroup', blank=True)),
             ],
             options={
                 'verbose_name': '\u7528\u6237\u4fe1\u606f',

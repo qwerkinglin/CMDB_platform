@@ -11,10 +11,14 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='BindHostToUser',
+            name='BindHostToGroup',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
             ],
+            options={
+                'verbose_name': '\u4e3b\u673a\u4e0e\u7ec4\u7ed1\u5b9a',
+                'verbose_name_plural': '\u4e3b\u673a\u4e0e\u7ec4\u7ed1\u5b9a',
+            },
         ),
         migrations.CreateModel(
             name='Host',
@@ -34,6 +38,10 @@ class Migration(migrations.Migration):
                 ('create_date', models.DateTimeField(auto_now_add=True)),
                 ('memo', models.TextField(null=True, blank=True)),
             ],
+            options={
+                'verbose_name': '\u4e3b\u673a\u5217\u8868',
+                'verbose_name_plural': '\u4e3b\u673a\u5217\u8868',
+            },
         ),
         migrations.CreateModel(
             name='HostGroup',
@@ -42,6 +50,10 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(unique=True, max_length=64)),
                 ('memo', models.TextField(null=True, blank=True)),
             ],
+            options={
+                'verbose_name': '\u4e3b\u673a\u7ec4',
+                'verbose_name_plural': '\u4e3b\u673a\u7ec4',
+            },
         ),
         migrations.CreateModel(
             name='HostUser',
@@ -50,7 +62,12 @@ class Migration(migrations.Migration):
                 ('auth_type', models.CharField(default=b'ssh-password', max_length=32, choices=[(b'ssh-password', b'SSH/PASSWORD'), (b'ssh-key', b'SSH/KEY')])),
                 ('username', models.CharField(max_length=64)),
                 ('password', models.CharField(max_length=128, null=True, blank=True)),
+                ('memo', models.CharField(max_length=256, null=True, blank=True)),
             ],
+            options={
+                'verbose_name': '\u4e3b\u673a\u7528\u6237',
+                'verbose_name_plural': '\u4e3b\u673a\u7528\u6237',
+            },
         ),
         migrations.CreateModel(
             name='IDC',
@@ -59,6 +76,10 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(unique=True, max_length=64)),
                 ('memo', models.TextField(null=True, blank=True)),
             ],
+            options={
+                'verbose_name': 'IDC',
+                'verbose_name_plural': 'IDC',
+            },
         ),
         migrations.AlterUniqueTogether(
             name='hostuser',
@@ -70,22 +91,13 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(to='hosts.IDC'),
         ),
         migrations.AddField(
-            model_name='bindhosttouser',
-            name='host',
-            field=models.ForeignKey(to='hosts.Host'),
+            model_name='bindhosttogroup',
+            name='bind_hosts',
+            field=models.ManyToManyField(to='hosts.Host'),
         ),
         migrations.AddField(
-            model_name='bindhosttouser',
-            name='host_groups',
-            field=models.ManyToManyField(to='hosts.HostGroup'),
-        ),
-        migrations.AddField(
-            model_name='bindhosttouser',
-            name='host_user',
-            field=models.ForeignKey(to='hosts.HostUser'),
-        ),
-        migrations.AlterUniqueTogether(
-            name='bindhosttouser',
-            unique_together=set([('host', 'host_user')]),
+            model_name='bindhosttogroup',
+            name='host_group',
+            field=models.ForeignKey(to='hosts.HostGroup'),
         ),
     ]
