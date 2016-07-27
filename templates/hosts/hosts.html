@@ -33,9 +33,11 @@
                                     {% for group in request.user.host_groups.select_related %}
                                         <li class="jstree-open" data-jstree='{"type":"group"}'>{{ group.name }}
                                             <ul>
-{#                                                {% for h in group.bindhosttogroup_set %}#}
-                                                    <li data-jstree='{"type":"default"}'>{{ group.bindhosttogroup_set }}</li>
-{#                                                {% endfor %}#}
+                                                {% for h in group.bindhosttogroup_set.all %}
+                                                    {% for s in h.bind_hosts.all %}
+                                                        <li data-jstree='{"type":"default"}'>{{ s }}</li>
+                                                    {% endfor %}
+                                                {% endfor %}
                                             </ul>
                                         </li>
 
