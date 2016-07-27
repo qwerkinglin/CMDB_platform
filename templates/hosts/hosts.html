@@ -34,8 +34,8 @@
                                         <li class="jstree-open" data-jstree='{"type":"group"}'>{{ group.name }}
                                             <ul>
                                                 {% for h in group.bindhosttogroup_set.all %}
-                                                    {% for s in h.bind_hosts.all %}
-                                                        <li data-jstree='{"type":"default"}'>{{ s }}</li>
+                                                    {% for server in h.bind_hosts.all %}
+                                                        <li data-jstree='{"type":"default"}'>{{ server }}</li>
                                                     {% endfor %}
                                                 {% endfor %}
                                             </ul>
