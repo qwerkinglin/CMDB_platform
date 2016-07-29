@@ -1,5 +1,100 @@
 {% extends 'base.html' %}
+{% block head-css %}
+    <link href="/static/css/plugins/jsTree/style.min.css" rel="stylesheet">
+{% endblock %}
 
 {% block content-wrapper %}
-hosts commands
+    <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Host groups</h5>
+                    <div class="ibox-tools">
+{#                        <a class="collapse-link">#}
+{#                            <i class="fa fa-chevron-up"></i>#}
+{#                        </a>#}
+{#                        <a class="close-link">#}
+{#                            <i class="fa fa-times"></i>#}
+{#                        </a>#}
+                    </div>
+                </div>
+                <div class="ibox-content">
+
+                    <div id="jstree1">
+                        <ul>
+                            <li data-jstree='{"type":"tree_top"}' class="jstree-open">Host groups
+                                <ul>
+                                    {% for group in request.user.host_groups.select_related %}
+                                        {% for c in group.bindhosttogroup_set.all %}
+                                            <li data-jstree='{"type":"group"}'>
+                                                <span class="badge badge-info">{{ c.bind_hosts.all.count }}</span> {{ group.name }}
+                                        {% endfor %}
+                                                <ul>
+                                                    {% for h in group.bindhosttogroup_set.all %}
+                                                        {% for server in h.bind_hosts.all %}
+                                                            <li data-jstree='{"type":"default"}'>{{ server }}</li>
+                                                        {% endfor %}
+                                                    {% endfor %}
+                                                </ul>
+                                            </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block bottom-js %}
+    <script src="/static/js/plugins/jsTree/jstree.min.js"></script>
+
+    <style>
+        .jstree-open > .jstree-anchor > .fa-folder:before {
+            content: "\f07c";
+        }
+
+        .jstree-default .jstree-icon.none {
+            width: 0;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function(){
+
+            $('#jstree1').jstree({
+                'core' : {
+                    'check_callback' : true
+                },
+                'plugins' : [ 'types', 'dnd' ],
+                'types' : {
+                    'default' : {
+                        'icon' : 'fa fa-desktop'
+                    },
+                    'html' : {
+                        'icon' : 'fa fa-file-code-o'
+                    },
+                    'svg' : {
+                        'icon' : 'fa fa-file-picture-o'
+                    },
+                    'css' : {
+                        'icon' : 'fa fa-file-code-o'
+                    },
+                    'img' : {
+                        'icon' : 'fa fa-file-image-o'
+                    },
+                    'js' : {
+                        'icon' : 'fa fa-file-text-o'
+                    },
+                    'tree_top' : {
+                        'icon' : 'fa fa-sitemap'
+                    },
+                    'group' : {
+                        'icon' : 'fa fa-folder'
+                    },
+                }
+            });
+        });
+    </script>
 {% endblock %}
