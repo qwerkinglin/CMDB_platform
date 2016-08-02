@@ -72,24 +72,24 @@ class BindHostToUser(models.Model):
 
     class Meta:
         unique_together = ('host','host_user')
-        verbose_name = u'主机与用户绑定'
-        verbose_name_plural = u"主机与用户绑定"
+        verbose_name = u'用户与主机绑定'
+        verbose_name_plural = u"用户与主机绑定"
 
     def __unicode__(self):
-        return "%s:%s" %(self.host.hostname, self.host_user.username)
+        return "%s@%s" %(self.host_user.username, self.host.hostname)
 
 class BindHostToGroup(models.Model):
     host_group = models.ForeignKey("HostGroup")
     bind_hosts = models.ManyToManyField("BindHostToUser")
 
     class Meta:
-        verbose_name = u'主机与组绑定'
-        verbose_name_plural = u"主机与组绑定"
+        verbose_name = u'组与主机绑定'
+        verbose_name_plural = u"组与主机绑定"
 
     def __unicode__(self):
         return "%s" %(self.host_group.name,)
 
     def get_hosts(self):
-        #return '_'.join([g.host.hostname+":"+g.host_user.username for g in self.bind_hosts.select_related()])
+        #return '_'.join([g.host_user.username+"@"+g.host.hostname for g in self.bind_hosts.select_related()])
         return '_'.join([g.host.hostname for g in self.bind_hosts.select_related()])
 
