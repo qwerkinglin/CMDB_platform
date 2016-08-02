@@ -11,7 +11,7 @@ class Task(object):
             return func()
 
     def multi_cmd(self):
-        print '------going to run cmd------'
+        print '------going to run cmds-----'
 
     def multi_file_transfer(self):
         pass
