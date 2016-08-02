@@ -1,6 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render,HttpResponse
 from django.contrib.auth.decorators import login_required
-import models
+import models,task
 # Create your views here.
 
 @login_required
@@ -19,3 +19,10 @@ def hosts_files(request):
 @login_required
 def hosts_commands(request):
     return render(request, 'hosts/mutilcmd.html')
+
+@login_required
+def submit_task(request):
+    print request.POST
+    tas_obj = task.Task(request)
+    res = tas_obj.handle()
+    return HttpResponse('dddd')

@@ -84,6 +84,7 @@
                 <div class="input-group">
                     <input id="cmd_text" type="text" class="form-control"><span class="input-group-btn"><button type="button" class="btn btn-primary" onclick="SubmitTask('multi_cmd')">Run!</button></span>
                 </div>
+                <div id="err-msg"></div>
             </div>
         </div>
     </div>
@@ -151,13 +152,36 @@
 
     function FormVerification(task_type){
         var err_list = [];
+        var data_list = {};
         if (task_type == 'multi_cmd'){
             var selected_hosts = VerifyHostSelection();
+            data_list['selected_hosts'] = selected_hosts;
             var cmd_text = $.trim($("#cmd_text").val());
+            data_list['cmd'] = cmd_text;
+            data_list['task_type'] = task_type;
             if (selected_hosts.length == 0){
-                err_list.push()
+                err_list.push(['Authentication Failed',"haven`t selected hosts!"])
+            }
+            if (cmd_text.length == 0){
+                err_list.push(['Authentication Failed',"haven`t enter a command"])
             }
         }
+
+        if (err_list.length > 0){
+            $("#err-msg").html("");
+            $.each(err_list,function(index,item){
+                var err_msg = "<p style='color:red;'>" + item[1] + "</p>"
+                $("#err-msg").append(err_msg);
+            })
+        }else{
+            $("#err-msg").html("");
+            //提交任务到后台
+            data_list['csrfmiddlewaretoken'] = $("input[name='csrfmiddlewaretoken']").val();
+            $.post("{% url 'submit_task' %}", data_list, function(callback){
+                console.log(callback);
+            })  //end post
+        }
+
     }
 
     function VerifyHostSelection(){
