@@ -108,6 +108,7 @@
             $('#jstree1').jstree({
                 'core' : {
                     'check_callback' : true ,
+                    'dblclick_toggle' : false ,
                 },
                 'plugins' : [ 'types', 'dnd','checkbox' ],
                 "checkbox" : {
@@ -160,10 +161,10 @@
             data_list['cmd'] = cmd_text;
             data_list['task_type'] = task_type;
             if (selected_hosts.length == 0){
-                err_list.push(['Authentication Failed',"haven`t selected hosts!"])
+                err_list.push(['Authentication Failed',"Tip: haven`t selected hosts!"])
             }
             if (cmd_text.length == 0){
-                err_list.push(['Authentication Failed',"haven`t enter a command"])
+                err_list.push(['Authentication Failed',"Tip: haven`t enter a command"])
             }
         }
 
