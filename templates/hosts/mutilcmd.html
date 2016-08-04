@@ -23,7 +23,7 @@
                     <ul>
                         <li data-jstree='{"type":"tree_top"}' class="jstree-open">Host groups
                             <ul>
-                                <li data-jstree='{"type":"group"}' class="text-navy">
+                                <li data-jstree='{"type":"group"}' class="text-navy jstree-open jstree-unchecked">
                                     Ungrouped
                                     <ul>
                                         {% for all in request.user.bind_hosts.select_related %}
@@ -161,17 +161,17 @@
             data_list['cmd'] = cmd_text;
             data_list['task_type'] = task_type;
             if (selected_hosts.length == 0){
-                err_list.push(['Authentication Failed',"Tip: haven`t selected hosts!"])
+                err_list.push(['Authentication Failed',"Tip: haven`t select hosts!"])
             }
             if (cmd_text.length == 0){
-                err_list.push(['Authentication Failed',"Tip: haven`t enter a command"])
+                err_list.push(['Authentication Failed',"Tip: haven`t enter a command!"])
             }
         }
 
         if (err_list.length > 0){
             $("#err-msg").html("");
             $.each(err_list,function(index,item){
-                var err_msg = "<p style='color:red;'>" + item[1] + "</p>"
+                var err_msg = '<div class="alert-warning alert-dismissable">' + item[1] + '</div>'
                 $("#err-msg").append(err_msg);
             })
         }else{
@@ -180,9 +180,11 @@
             data_list['csrfmiddlewaretoken'] = $("input[name='csrfmiddlewaretoken']").val();
             $.post("{% url 'submit_task' %}", data_list, function(callback){
                 console.log(callback);
-            })  //end post
+                task_id_obj = JSON.parse(callback);
+                console.log(task_id_obj)
+                RefreshGetTaskResult(task_id_obj.task_id);
+            });  //end post
         }
-
     }
 
     function VerifyHostSelection(){
@@ -193,6 +195,18 @@
             selected_hosts.push(servers)
         });
         return selected_hosts;
+    }
+
+    function RefreshGetTaskResult(task_id){
+        GetTaskResult(task_id);
+    }
+
+    function GetTaskResult(task_id){
+        $.getJSON("{% url 'get_task_result' %}", {task_id:task_id}, function(callback){
+            console.log("----task err----");
+            console.log(callback);
+
+        }); //end getJSON
     }
     </script>
 {% endblock %}

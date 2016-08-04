@@ -1,6 +1,6 @@
 from django.shortcuts import render,HttpResponse
 from django.contrib.auth.decorators import login_required
-import models,task
+import models,task,json,utils
 # Create your views here.
 
 @login_required
@@ -25,4 +25,11 @@ def submit_task(request):
     print request.POST
     tas_obj = task.Task(request)
     res = tas_obj.handle()
-    return HttpResponse('dddd')
+    return HttpResponse(json.dumps(res))
+
+@login_required
+def get_task_result(request):
+    task_obj = task.Task(request)
+    res = task_obj.get_task_result()
+    print '--res--task--',res
+    return HttpResponse(json.dumps(res,default=utils.json_date_handler))
