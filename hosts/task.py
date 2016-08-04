@@ -1,7 +1,6 @@
 #_*_coding:utf-8_*_
 import models
 from django.db import transaction
-import utils
 
 class Task(object):
     def __init__(self,request):
@@ -49,4 +48,12 @@ class Task(object):
         task_id = self.request.GET.get('task_id')
         if task_id:
             res_list = models.TaskLogDetail.objects.filter(child_of_task_id=task_id)
-            return list(res_list.values())
+            return list(res_list.values(
+                                        'id',
+                                        'bind_host__host__hostname',
+                                        'bind_host__host__wan_ip',
+                                        'bind_host__host_user__username',
+                                        'date',
+                                        'event_log',
+                                        'result',
+                                        ))

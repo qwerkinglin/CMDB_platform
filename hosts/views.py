@@ -1,3 +1,4 @@
+#_*_coding:utf-8_*_
 from django.shortcuts import render,HttpResponse
 from django.contrib.auth.decorators import login_required
 import models,task,json,utils
