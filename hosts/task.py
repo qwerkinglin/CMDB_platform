@@ -52,6 +52,7 @@ class Task(object):
                                         'id',
                                         'bind_host__host__hostname',
                                         'bind_host__host__wan_ip',
+                                        'bind_host__host__lan_ip',
                                         'bind_host__host_user__username',
                                         'date',
                                         'event_log',

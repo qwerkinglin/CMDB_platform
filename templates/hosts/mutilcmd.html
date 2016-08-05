@@ -87,7 +87,25 @@
                 <div id="err-msg"></div>
             </div>
         </div>
+
+        <div class="ibox">
+            <div class="ibox-title">
+                <h5>Commands return information</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="fullscreen-link">
+                        <i class="fa fa-expand"></i>
+                    </a>
+                </div>
+            </div>
+            <div id="result-box" class="ibox-content">
+                <h3><strong>Haven't run commands yet!</strong></h3>
+            </div>
+        </div>
     </div>
+
 {% endblock %}
 
 {% block bottom-js %}
@@ -199,14 +217,47 @@
 
     function RefreshGetTaskResult(task_id){
         GetTaskResult(task_id);
+        GetTaskResultInterval = setInterval(function(){
+            GetTaskResult(task_id);
+        },10000);
     }
 
     function GetTaskResult(task_id){
         $.getJSON("{% url 'get_task_result' %}", {task_id:task_id}, function(callback){
             console.log("----task err----");
-            console.log(callback);
-
+            PrintOnPage(callback);
         }); //end getJSON
     }
+
+    function PrintOnPage(callback){
+        $('#result-box').html("");
+        $.each(callback,function(index,item){
+            var row_html =  '<div class="ibox">'+
+                                '<div class="ibox-title">'+
+                                    '<h5>'+item.bind_host__host_user__username+'@'+item.bind_host__host__hostname+'</h5>'+
+                                    '<div class="ibox-tools">'+
+                                        '<label class="label label-info">'+item.result+'</label>'+
+                                        '<label class="label label-info">'+item.bind_host__host__wan_ip+'|'+item.bind_host__host__lan_ip+'</label>'+
+                                        '<label class="label label-info">'+item.date+'</label>'+
+                                        '<a class="collapse-link">'+
+                                            '<i class="fa fa-chevron-up"></i>'+
+                                        '</a>'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="ibox-content">'+
+                                    '<div class="scroll_content">'+
+                                        '<pre>'+item.event_log+'</pre>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</div>'
+            $("#result-box").append(row_html);
+        }); //end each
+
+        $('.scroll_content').slimscroll({
+            height: '150px'
+        });
+
+    }
+
     </script>
 {% endblock %}

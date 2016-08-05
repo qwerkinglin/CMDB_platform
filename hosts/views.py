@@ -32,5 +32,4 @@ def submit_task(request):
 def get_task_result(request):
     task_obj = task.Task(request)
     res = task_obj.get_task_result()
-    print '--res--task--',res
     return HttpResponse(json.dumps(res,default=utils.json_date_handler))
