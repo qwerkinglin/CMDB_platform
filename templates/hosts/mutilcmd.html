@@ -217,9 +217,9 @@
 
     function RefreshGetTaskResult(task_id){
         GetTaskResult(task_id);
-        GetTaskResultInterval = setInterval(function(){
-            GetTaskResult(task_id);
-        },10000);
+{#        GetTaskResultInterval = setInterval(function(){#}
+{#            GetTaskResult(task_id);#}
+{#        },100000);#}
     }
 
     function GetTaskResult(task_id){
