@@ -1,6 +1,8 @@
 #_*_coding:utf-8_*_
-import models
+import models,os
+import  subprocess
 from django.db import transaction
+from CMDB_platform import settings
 
 class Task(object):
     def __init__(self,request):
@@ -17,7 +19,7 @@ class Task(object):
 
     @transaction.atomic #函数执行完成后统一commit到数据库
     def multi_cmd(self):
-        print '------going to run cmds-----'
+        # print '------going to run cmds-----'
         selected_hosts = set(self.request.POST.getlist("selected_hosts[]"))
         cmd = self.request.POST.get("cmd")
         #create task info
@@ -38,6 +40,15 @@ class Task(object):
                 event_log = "N/A",
             )
             obj.save()
+         #invoke backens mylti_task script
+        p = subprocess.Popen([
+            'python',
+            settings.MultiTaskScript,
+            '-task_id',str(task_obj.id),
+            '-run_type',settings.MultiTaskRunType,
+        ])
+        # 获取该进程pid 在linux有效 上行代码添加后面参数    ],preexec_fn=os.setsid)
+        # print '---->pid:',p.pid    #通过此方法获取pid 可用于强制结束该任务
 
         return {'task_id':task_obj.id}
 

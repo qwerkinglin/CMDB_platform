@@ -199,7 +199,7 @@
             $.post("{% url 'submit_task' %}", data_list, function(callback){
                 console.log(callback);
                 task_id_obj = JSON.parse(callback);
-                console.log(task_id_obj)
+                console.log(task_id_obj.task_id);
                 RefreshGetTaskResult(task_id_obj.task_id);
             });  //end post
         }
@@ -217,20 +217,19 @@
 
     function RefreshGetTaskResult(task_id){
         GetTaskResult(task_id);
-{#        GetTaskResultInterval = setInterval(function(){#}
+{#        setInterval(function(){#}
 {#            GetTaskResult(task_id);#}
-{#        },100000);#}
+{#        },5000);#}
     }
 
     function GetTaskResult(task_id){
         $.getJSON("{% url 'get_task_result' %}", {task_id:task_id}, function(callback){
-            console.log("----task err----");
             PrintOnPage(callback);
         }); //end getJSON
     }
 
     function PrintOnPage(callback){
-        $('#result-box').html("");
+        $('#result-box').html(" ");
         $.each(callback,function(index,item){
             var row_html =  '<div class="ibox">'+
                                 '<div class="ibox-title">'+
@@ -254,7 +253,7 @@
         }); //end each
 
         $('.scroll_content').slimscroll({
-            height: '150px'
+            height: '200px'
         });
     }
     </script>

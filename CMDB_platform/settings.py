@@ -112,3 +112,6 @@ STATICFILES_DIRS = [
 ]
 
 LOGIN_URL = '/login/'
+
+MultiTaskScript = "%s/hosts/backends/multi_task.py" % BASE_DIR
+MultiTaskRunType = 'by_paramiko'
