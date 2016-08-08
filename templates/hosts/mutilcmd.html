@@ -217,14 +217,19 @@
 
     function RefreshGetTaskResult(task_id){
         GetTaskResult(task_id);
-{#        setInterval(function(){#}
-{#            GetTaskResult(task_id);#}
-{#        },5000);#}
+        ResultRefresh = setInterval(function(){
+            if (testvalue = $('#result-box').find("pre").html() == "N/A"){
+                GetTaskResult(task_id);
+            }
+        },3000);
     }
 
     function GetTaskResult(task_id){
         $.getJSON("{% url 'get_task_result' %}", {task_id:task_id}, function(callback){
             PrintOnPage(callback);
+            if ($('#result-box').find("pre").html() != "N/A"){
+                clearInterval(ResultRefresh);
+            }
         }); //end getJSON
     }
 
