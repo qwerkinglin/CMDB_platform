@@ -17,7 +17,9 @@
             </div>
         </div>
         <div class="ibox-content">
-            {% include 'hosts/task_exec_component.html' %}
+            <div class="input-group">
+                <input id="cmd_text" type="text" class="form-control"><span class="input-group-btn"><button type="button" class="btn btn-primary" onclick="SubmitTask('multi_cmd')">Run!</button></span>
+            </div>
             <div id="err-msg"></div>
         </div>
     </div>
@@ -40,7 +42,6 @@
         </div>
     </div>
 </div>
-
 {% endblock %}
 
 {% block bottom-js %}
