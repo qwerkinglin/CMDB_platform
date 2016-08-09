@@ -1,0 +1,50 @@
+<div class="col-lg-3">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>Host groups</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+
+            <div id="jstree1">
+                <ul>
+                    <li data-jstree='{"type":"tree_top"}' class="jstree-open">Host groups
+                        <ul>
+                            <li data-jstree='{"type":"group"}' class="text-navy jstree-open jstree-unchecked">
+                                Ungrouped
+                                <ul>
+                                    {% for all in request.user.bind_hosts.select_related %}
+                                        <li data-jstree='{"type":"default"}' data-binduserid={{ all.id }}>{{ all }}</li>
+                                    {% endfor %}
+                                </ul>
+                                <span class="badge badge-info">{{ request.user.bind_hosts.select_related.count }}</span>
+                            </li>
+                        </ul>
+                        <ul>
+                            {% for group in request.user.host_groups.select_related %}
+                                {% for c in group.bindhosttogroup_set.all %}
+                                    <li data-jstree='{"type":"group"}' class="jstree-closed jstree-unchecked">
+                                        {{ group.name }}
+                                        <ul>
+                                            {% for h in group.bindhosttogroup_set.all %}
+                                                {% for server in h.bind_hosts.all %}
+                                                    <li data-jstree='{"type":"default"}' data-binduserid={{ server.id }}>{{ server }}</li>
+                                                {% endfor %}
+                                            {% endfor %}
+                                        </ul>
+                                        <span class="badge badge-info">{{ c.bind_hosts.all.count }}</span>
+                                    </li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+        </div>
+</div>

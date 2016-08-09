@@ -15,11 +15,11 @@ def hosts_index(request):
 
 @login_required
 def hosts_files(request):
-    return render(request, 'hosts/mutilfiles.html')
+    return render(request, 'hosts/mutil_files_transfer.html')
 
 @login_required
 def hosts_commands(request):
-    return render(request, 'hosts/mutilcmd.html')
+    return render(request, 'hosts/mutil_cmd.html')
 
 @login_required
 def submit_task(request):
