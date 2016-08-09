@@ -23,7 +23,6 @@ def hosts_commands(request):
 
 @login_required
 def submit_task(request):
-    print request.POST
     tas_obj = task.Task(request)
     res = tas_obj.handle()
     return HttpResponse(json.dumps(res))

@@ -7,7 +7,6 @@ from hosts import models
 import django
 import multiprocessing,paramiko_handle
 from django.core.exceptions import ObjectDoesNotExist
-
 django.setup() #allow outsider scripts invoke django db models
 
 def by_paramiko(task_id):

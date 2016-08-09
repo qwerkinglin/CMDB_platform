@@ -4,7 +4,7 @@ from hosts import models
 from django.utils import timezone
 
 def paramiko_ssh(task_id,host_obj,task_content):
-    print "going to run:",host_obj,task_content
+    # print "going to run:",host_obj,task_content
     bind_host = host_obj
     s = paramiko.SSHClient()
     s.load_system_host_keys()

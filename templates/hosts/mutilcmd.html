@@ -92,6 +92,7 @@
             <div class="ibox-title">
                 <h5>Commands return information</h5>
                 <div class="ibox-tools">
+                    <button type="button" class="btn btn-info btn-xs" onclick="collapse_all()">Collapse all</button>
                     <a class="collapse-link">
                         <i class="fa fa-chevron-up"></i>
                     </a>
@@ -163,6 +164,13 @@
     </script>
 
     <script>
+    function collapse_all(){
+        $('#result-box').find("a").each(function(i,val){
+            $('#result-box a')[i].click();
+        })
+
+    }
+
     function SubmitTask(task_type){
         if (task_type == 'multi_cmd'){
             FormVerification(task_type);
@@ -197,9 +205,9 @@
             //提交任务到后台
             data_list['csrfmiddlewaretoken'] = $("input[name='csrfmiddlewaretoken']").val();
             $.post("{% url 'submit_task' %}", data_list, function(callback){
-                console.log(callback);
+{#                console.log(callback);#}
                 task_id_obj = JSON.parse(callback);
-                console.log(task_id_obj.task_id);
+{#                console.log(task_id_obj.task_id);#}
                 RefreshGetTaskResult(task_id_obj.task_id);
             });  //end post
         }
@@ -218,18 +226,23 @@
     function RefreshGetTaskResult(task_id){
         GetTaskResult(task_id);
         ResultRefresh = setInterval(function(){
-            if (testvalue = $('#result-box').find("pre").html() == "N/A"){
-                GetTaskResult(task_id);
+            var stat_list = [];
+            $('#result-box').find("pre").each(function(i,val){
+                var res = $(this).html();
+                stat_list.push(res);
+                if (res == "N/A"){
+                    GetTaskResult(task_id);
+                }
+            });
+            if(stat_list.indexOf('N/A') == -1){
+                clearInterval(ResultRefresh);
             }
-        },3000);
+        },2000);
     }
 
     function GetTaskResult(task_id){
         $.getJSON("{% url 'get_task_result' %}", {task_id:task_id}, function(callback){
             PrintOnPage(callback);
-            if ($('#result-box').find("pre").html() != "N/A"){
-                clearInterval(ResultRefresh);
-            }
         }); //end getJSON
     }
 
@@ -253,7 +266,7 @@
                                         '<pre>'+item.event_log+'</pre>'+
                                     '</div>'+
                                 '</div>'+
-                            '</div>'
+                            '</div>';
             $("#result-box").append(row_html);
         }); //end each
 
