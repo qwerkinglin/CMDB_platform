@@ -2,6 +2,8 @@
 
 {% block head-css %}
     <link href="/static/css/plugins/jsTree/style.min.css" rel="stylesheet">
+    <link href="/static/css/plugins/dropzone/basic.css" rel="stylesheet">
+    <link href="/static/css/plugins/dropzone/dropzone.css" rel="stylesheet">
 {% endblock %}
 
 {% block content-wrapper %}
@@ -19,15 +21,44 @@
             </div>
         </div>
         <div class="ibox-content">
+            <div class="tabs-container">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-cloud-upload"></i>distribute files</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-2"><i class="fa fa-cloud-download"></i>fetch files</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="panel-body">
+                            <div id="my-awesome-dropzone" class="dropzone" action="#">
+                                <button id="upload_submit" type="submit" class="btn btn-primary pull-right">Submit this form!</button>
+                                <div class="dropzone-previews"></div>
+                            </div>
+                            </br>
+                            <div class="input-group">
+                                <input id="multi_file_text" type="text" class="form-control" placeholder="Enter the RemoteHost absolute path except filename"><span class="input-group-btn"><button type="button" class="btn btn-primary" onclick="SubmitTask('multi_file_tranfer')">Upload</button></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-2" class="tab-pane">
+                        <div class="panel-body">
+                            <strong>Donec quam felis</strong>
 
+                            <p>Thousand unknown plants are noticed by me: when I hear the buzz of the little world among the stalks, and grow familiar with the countless indescribable forms of the insects
+                                and flies, then I feel the presence of the Almighty, who formed us in his own image, and the breath </p>
 
-            <div id="err-msg"></div>
+                            <p>I am alone, and feel the charm of existence in this spot, which was created for the bliss of souls like mine. I am so happy, my dear friend, so absorbed in the exquisite
+                                sense of mere tranquil existence, that I neglect my talents. I should be incapable of drawing a single stroke at the present moment; and yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        <div id="err-msg"></div>
     </div>
 
     <div class="ibox">
         <div class="ibox-title">
-            <h5>Files status info</h5>
+            <h5>Status info</h5>
             <div class="ibox-tools">
                 <button type="button" class="btn btn-primary btn-xs" onclick="collapse_all()">Collapse/Expansion</button>
                 <a class="collapse-link">
@@ -39,12 +70,48 @@
             </div>
         </div>
         <div id="result-box" class="ibox-content">
-            <h3><strong>Haven't upload files yet!</strong></h3>
+            <h3><strong>Haven't distribute files yet!</strong></h3>
         </div>
     </div>
 </div>
+
+
+
 {% endblock %}
 
 {% block bottom-js %}
 {% include 'hosts/multi_task_js_component.html' %}
+<script src="/static/js/plugins/dropzone/dropzone.js"></script>
+<script>
+    $(document).ready(function(){
+
+        Dropzone.options.myAwesomeDropzone = {
+            url: "{% url 'file_upload' %}",
+            autoProcessQueue: false,
+            uploadMultiple: true,
+            parallelUploads: 5,
+            maxFiles: 10,
+            maxFilesize:50,
+            addRemoveLinks: true,
+
+            // Dropzone settings
+            init: function() {
+                var myDropzone = this;
+
+                this.element.querySelector("#upload_submit").addEventListener("click", function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    myDropzone.processQueue();
+                });
+{#                this.on("sendingmultiple", function() {#}
+{#                });#}
+{#                this.on("successmultiple", function(files, response) {#}
+{#                });#}
+{#                this.on("errormultiple", function(files, response) {#}
+{#                });#}
+            }
+        }
+
+   });
+</script>
 {% endblock %}

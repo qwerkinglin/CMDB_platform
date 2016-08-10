@@ -2,6 +2,7 @@
 from django.shortcuts import render,HttpResponse
 from django.contrib.auth.decorators import login_required
 import models,task,json,utils
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 @login_required
@@ -32,3 +33,10 @@ def get_task_result(request):
     task_obj = task.Task(request)
     res = task_obj.get_task_result()
     return HttpResponse(json.dumps(res,default=utils.json_date_handler))
+
+@csrf_exempt
+@login_required
+def file_upload(request):
+    filename = request.FILES['file[]']
+    file_path =utils.handle_upload_file(request,filename)
+    return HttpResponse(json.dumps({'uploaded_file_path':file_path}))

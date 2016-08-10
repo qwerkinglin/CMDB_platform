@@ -16,7 +16,7 @@ def paramiko_ssh(task_id,host_obj,task_content):
                       int(bind_host.host.port),
                       bind_host.host_user.username,
                       bind_host.host_user.password,
-                      timeout=5
+                      timeout=3
                       )
         else:
             pass

@@ -108,10 +108,11 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR,'statics'),
+    os.path.join(BASE_DIR,'static'),
 ]
 
 LOGIN_URL = '/login/'
 
 MultiTaskScript = "%s/hosts/backends/multi_task.py" % BASE_DIR
 MultiTaskRunType = 'by_paramiko'
+FileUploadDir = '%s/uploads' % BASE_DIR

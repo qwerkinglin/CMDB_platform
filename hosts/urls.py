@@ -8,4 +8,5 @@ urlpatterns = [
     url("^commands/$", views.hosts_commands, name="hosts_commands"),
     url("^submit_task/$", views.submit_task, name="submit_task"),
     url("^get_task_result/$", views.get_task_result, name="get_task_result"),
+    url("^file_upload/$", views.file_upload, name="file_upload"),
 ]
