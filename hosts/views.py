@@ -37,6 +37,6 @@ def get_task_result(request):
 @csrf_exempt
 @login_required
 def file_upload(request):
-    filename = request.FILES['file[]']
+    filename = request.FILES['file']
     file_path =utils.handle_upload_file(request,filename)
     return HttpResponse(json.dumps({'uploaded_file_path':file_path}))

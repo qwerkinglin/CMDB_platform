@@ -30,7 +30,7 @@
                     <div id="tab-1" class="tab-pane active">
                         <div class="panel-body">
                             <div id="my-awesome-dropzone" class="dropzone" action="#">
-                                <button id="upload_submit" type="submit" class="btn btn-primary pull-right">Submit this form!</button>
+                                <button id="upload_submit" type="submit" class="btn btn-primary pull-right">Submit to localhost</button>
                                 <div class="dropzone-previews"></div>
                             </div>
                             </br>
@@ -87,9 +87,9 @@
 
         Dropzone.options.myAwesomeDropzone = {
             url: "{% url 'file_upload' %}",
-            autoProcessQueue: false,
-            uploadMultiple: true,
-            parallelUploads: 5,
+            autoProcessQueue: false,    //如为true 拖入文件到dropzone时自动上传到后台
+            uploadMultiple: false,      //如果为true request.FILE 里则为一个list 为file[]
+            parallelUploads: 10,
             maxFiles: 10,
             maxFilesize:50,
             addRemoveLinks: true,
@@ -97,7 +97,6 @@
             // Dropzone settings
             init: function() {
                 var myDropzone = this;
-
                 this.element.querySelector("#upload_submit").addEventListener("click", function(e) {
                     e.preventDefault();
                     e.stopPropagation();
