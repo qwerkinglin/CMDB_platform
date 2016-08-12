@@ -24,6 +24,7 @@ def hosts_commands(request):
 
 @login_required
 def submit_task(request):
+    # print request.POST
     tas_obj = task.Task(request)
     res = tas_obj.handle()
     return HttpResponse(json.dumps(res))
@@ -39,4 +40,5 @@ def get_task_result(request):
 def file_upload(request):
     filename = request.FILES['file']
     file_path =utils.handle_upload_file(request,filename)
-    return HttpResponse(json.dumps({'uploaded_file_path':file_path}))
+    # return HttpResponse(json.dumps({'uploaded_file_path':file_path}))
+    return HttpResponse(file_path)

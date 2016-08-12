@@ -1,5 +1,5 @@
 #_*_coding:utf-8_*_
-import models,os
+import models,os,json
 import  subprocess
 from django.db import transaction
 from CMDB_platform import settings
@@ -19,7 +19,6 @@ class Task(object):
 
     @transaction.atomic #函数执行完成后统一commit到数据库
     def multi_cmd(self):
-        # print '------going to run cmds-----'
         selected_hosts = set(self.request.POST.getlist("selected_hosts[]"))
         cmd = self.request.POST.get("cmd")
         #create task info
@@ -37,7 +36,7 @@ class Task(object):
             obj = models.TaskLogDetail(
                 child_of_task_id = task_obj.id,
                 bind_host_id = bind_host_id,
-                event_log = "N/A",
+                event_log = '<img src="/static/css/plugins/jsTree/throbber.gif" alt="loadimage">',
             )
             obj.save()
          #invoke backens mylti_task script
@@ -47,13 +46,50 @@ class Task(object):
             '-task_id',str(task_obj.id),
             '-run_type',settings.MultiTaskRunType,
         ])
-        # 获取该进程pid 在linux有效 上行代码添加后面参数    ],preexec_fn=os.setsid)
+        # 获取该进程pid 在linux有效 上行代码用后面代码替换  ],preexec_fn=os.setsid)
         # print '---->pid:',p.pid    #通过此方法获取pid 可用于强制结束该任务
 
         return {'task_id':task_obj.id}
 
     def multi_file_transfer(self):
-        pass
+        # print '----going to upload/download files'
+        selected_hosts = set(self.request.POST.getlist("selected_hosts[]"))
+        transfer_type = self.request.POST.get("file_transfer_type")
+        remote_path = self.request.POST.get("remote_path")
+        upload_files = self.request.POST.getlist("upload_files[]")
+        #create task info
+        data_dic = {
+            'remote_path':remote_path,
+            'upload_files':upload_files,
+        }
+        task_obj = models.TaskLog(
+            task_type = transfer_type,
+            user_id = self.request.user.id,
+            #many to many 关系要创建记录后添加
+            cmd = json.dumps(data_dic),
+        )
+        task_obj.save()
+        task_obj.hosts.add(*selected_hosts) #添加many to many 关系 必须传入id 传入列表的时候前面加*号
+
+        #create task detail for all hosts will be executed
+        for bind_host_id in selected_hosts:
+            obj = models.TaskLogDetail(
+                child_of_task_id = task_obj.id,
+                bind_host_id = bind_host_id,
+                event_log = '<img src="/static/css/plugins/jsTree/throbber.gif" alt="loadimage">',
+            )
+            obj.save()
+         #invoke backens mylti_task script
+        p = subprocess.Popen([
+            'python',
+            settings.MultiTaskScript,
+            '-task_id',str(task_obj.id),
+            '-run_type',settings.MultiTaskRunType,
+        ])
+        # 获取该进程pid 在linux有效 上行代码用后面代码替换  ],preexec_fn=os.setsid)
+        # print '---->pid:',p.pid    #通过此方法获取pid 可用于强制结束该任务
+
+        return {'task_id':task_obj.id}
 
     def get_task_result(self):
         task_id = self.request.GET.get('task_id')

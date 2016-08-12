@@ -14,9 +14,14 @@ def by_paramiko(task_id):
         task_obj = models.TaskLog.objects.get(id=task_id)
         pool = multiprocessing.Pool(processes=5)
         res = []
-        for h in task_obj.hosts.select_related():
-            p = pool.apply_async(paramiko_handle.paramiko_ssh,args=(task_id,h,task_obj.cmd))
-            res.append(p)
+        if task_obj.task_type == 'multi_cmd':
+            for h in task_obj.hosts.select_related():
+                p = pool.apply_async(paramiko_handle.paramiko_ssh,args=(task_id,h,task_obj.cmd))
+                res.append(p)
+        elif task_obj.task_type in ('file_send','file_get'):
+            for h in task_obj.hosts.select_related():
+                p = pool.apply_async(paramiko_handle.paramiko_sftp,args=(task_id,h,task_obj.cmd,task_obj.task_type,task_obj.user.id))
+                res.append(p)
         pool.close()
         pool.join()
 

@@ -7,16 +7,16 @@ def json_date_handler(obj):
         return obj.strftime("%Y-%m-%d %H:%M:%S")
 
 def handle_upload_file(request,file_obj):
-    # random_dir = ''.join(random.sample('zyxwvutsrqponmlkjihgfedcba1234567890',10))
+    random_dir = ''.join(random.sample('zyxwvutsrqponmlkjihgfedcba1234567890',10))
     upload_dir = '%s/%s' %(settings.FileUploadDir,request.user.id)
-    # upload_dir2 = '%s/%s' %(upload_dir,random_dir)
+    upload_dir2 = '%s/%s' %(upload_dir,random_dir)
     if not os.path.isdir(upload_dir):
         os.mkdir(upload_dir)
-    # if not os.path.isdir(upload_dir2):
-    #     os.mkdir(upload_dir2)
+    if not os.path.isdir(upload_dir2):
+        os.mkdir(upload_dir2)
 
-    with open('%s/%s' %(upload_dir,file_obj.name),'wb') as destination :
+    with open('%s/%s' %(upload_dir2,file_obj.name),'wb') as destination :
         for chunk in file_obj.chunks():
             destination.write(chunk)
 
-    # return  "%s/%s" %(random_dir,file_obj.name)
+    return  "%s/%s" %(random_dir,file_obj.name)
