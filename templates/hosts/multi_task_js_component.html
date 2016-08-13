@@ -152,6 +152,12 @@
             });
             if(stat_list.indexOf(load_image_html) == -1){
                 clearInterval(ResultRefresh);
+                $('#result-box div.ibox-tools label:first-child').each(function(){
+                    var status_res = $(this).html();
+                    if (status_res == 'failed'){
+                        $(this).attr("class","label label-danger");
+                    }
+                });
             }
         },2000);
     }
