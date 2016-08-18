@@ -56,11 +56,13 @@ class UserProfile(AbstractBaseUser):
     )
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+
     name = models.CharField(u'名字', max_length=32)
     token = models.CharField(u'token', max_length=128,default=None,blank=True,null=True)
     department = models.CharField(u'部门', max_length=32,default=None,blank=True,null=True)
     tel = models.CharField(u'座机', max_length=32,default=None,blank=True,null=True)
     mobile = models.CharField(u'手机', max_length=32,default=None,blank=True,null=True)
+
     memo = models.TextField(u'备注', blank=True,null=True,default=None)
     date_joined = models.DateTimeField(blank=True, auto_now_add=True)
     #valid_begin = models.DateTimeField(blank=True, auto_now=True)
@@ -83,7 +85,7 @@ class UserProfile(AbstractBaseUser):
     def __str__(self):              # __unicode__ on Python 2
         return self.email
 
-    def has_perm(self, perm, obj=None):
+    def has_perms(self, perm, obj=None):
         "Does the user have a specific permission?"
         # Simplest possible answer: Yes, always
         return True

@@ -40,7 +40,7 @@
         alwaysVisible : false,
 
         // check if we should hide the scrollbar when user is hovering over
-        disableFadeOut : false,
+        disableFadeOut : true,
 
         // sets visibility of the rail
         railVisible : false,
