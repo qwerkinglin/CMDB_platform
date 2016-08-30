@@ -42,3 +42,25 @@ def file_upload(request):
     file_path =utils.handle_upload_file(request,filename)
     # return HttpResponse(json.dumps({'uploaded_file_path':file_path}))
     return HttpResponse(file_path)
+
+@csrf_exempt
+@utils.token_required
+def report_no_id(request):
+    print request.POST
+    response = {
+         'error':['fail'],
+        'info':[],
+        'warning':[]
+    }
+    return HttpResponse(json.dumps(response))
+
+@csrf_exempt
+@utils.token_required
+def report(request):
+    print request.POST
+    response = {
+         'error':['fail'],
+        'info':[],
+        'warning':[]
+    }
+    return HttpResponse(json.dumps(response))

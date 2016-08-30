@@ -117,6 +117,7 @@ LOGIN_URL = '/login/'
 MultiTaskScript = "%s/hosts/backends/multi_task.py" % BASE_DIR
 MultiTaskRunType = 'by_paramiko'
 FileUploadDir = '%s/uploads' % BASE_DIR
+TOKEN_TIMEOUT = 120
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,

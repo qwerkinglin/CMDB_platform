@@ -70,7 +70,7 @@ class UserProfileAdmin(UserAdmin):
     list_filter = ('is_admin','date_joined','department')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('name','department','tel','mobile','memo')}),
+        ('Personal info', {'fields': ('name','token','department','tel','mobile','memo')}),
         #('API TOKEN info', {'fields': ('token',)}),
         (u'可管理的主机组', {'fields': ('host_groups',)}),
         (u'可管理的主机', {'fields': ('bind_hosts',)}),
@@ -87,4 +87,3 @@ class UserProfileAdmin(UserAdmin):
     search_fields = ('email','department')
     ordering = ('email',)
     filter_horizontal = ('bind_hosts','host_groups')
-

@@ -23,7 +23,6 @@ class UserManager(BaseUserManager):
             #department=department,
             #tel=tel,
             #memo=memo,
-
         )
 
         user.set_password(password)
@@ -46,7 +45,6 @@ class UserManager(BaseUserManager):
         user.is_admin = True
         user.save(using=self._db)
         return user
-
 
 class UserProfile(AbstractBaseUser):
     email = models.EmailField(
@@ -86,6 +84,11 @@ class UserProfile(AbstractBaseUser):
         return self.email
 
     def has_perms(self, perm, obj=None):
+        "Does the user have a specific permission?"
+        # Simplest possible answer: Yes, always
+        return True
+
+    def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
         # Simplest possible answer: Yes, always
         return True
