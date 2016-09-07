@@ -10,5 +10,6 @@ urlpatterns = [
     url("^get_task_result/$", views.get_task_result, name="get_task_result"),
     url("^file_upload/$", views.file_upload, name="file_upload"),
     url("^report/asset_with_no_asset_id/$", views.report_no_id, name="asset_report_no_id"),
+    url(r'^new_assets/approval/$',views.new_assets_approval,name="new_assets_approval" ),
     url("^report/$", views.report, name="asset_report"),
 ]

@@ -2,8 +2,9 @@
 from django.db import models
 # Create your models here.
 class Host(models.Model):
+    sn = models.CharField(max_length=128,unique=True)
     hostname = models.CharField(max_length=64)
-    wan_ip = models.GenericIPAddressField(unique=True)
+    wan_ip = models.GenericIPAddressField(unique=False)         #测试暂设为False 正式上线必须为True
     lan_ip = models.GenericIPAddressField(unique=True)
     domain = models.CharField(max_length=128)
     cpu = models.CharField(max_length=16)
@@ -123,3 +124,34 @@ class TaskLogDetail(models.Model):
     class Meta:
         verbose_name = u'批量任务日志'
         verbose_name_plural = u'批量任务日志'
+
+class NewAssetApprovalZone(models.Model):
+    sn = models.CharField(u'资产SN',max_length=128, unique=True)
+    asset_type_choices = (
+        ('server', u'服务器'),
+        ('switch', u'交换机'),
+        ('router', u'路由器'),
+        ('firewall', u'防火墙'),
+        ('storage', u'存储设备'),
+        ('wireless', u'无线AP'),
+        ('others', u'其它'),
+    )
+    asset_type = models.CharField(choices=asset_type_choices,max_length=64,blank=True,null=True)
+    wan_ip = models.GenericIPAddressField(unique=False)     #暂时把unique设置为False用于调试（由于测试机通过NAT上网，会造成外网IP重复），正式上线必须调回True
+    lan_ip = models.GenericIPAddressField(unique=True)
+    cpu_num = models.CharField(max_length=16)
+    memory_size = models.CharField(max_length=16)
+    disk_size = models.CharField(max_length=16)
+    os_version = models.CharField(max_length=64)
+    ssh_port = models.IntegerField(default=38096)
+    data = models.TextField(u'资产数据')
+    date = models.DateTimeField(u'汇报日期',auto_now_add=True)
+    approved = models.BooleanField(u'已批准',default=False)
+    approved_by = models.ForeignKey('myauth.UserProfile',verbose_name=u'批准人',blank=True,null=True)
+    approved_date = models.DateTimeField(u'批准日期',blank=True,null=True)
+
+    def __unicode__(self):
+        return self.sn
+    class Meta:
+        verbose_name = '新上线待批准资产'
+        verbose_name_plural = "新上线待批准资产"

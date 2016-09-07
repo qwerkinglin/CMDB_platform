@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
                 ('mobile', models.CharField(default=None, max_length=32, null=True, verbose_name='\u624b\u673a', blank=True)),
                 ('memo', models.TextField(default=None, null=True, verbose_name='\u5907\u6ce8', blank=True)),
                 ('date_joined', models.DateTimeField(auto_now_add=True)),
-                ('bind_hosts', models.ManyToManyField(to='hosts.BindHostToGroup', blank=True)),
+                ('bind_hosts', models.ManyToManyField(to='hosts.BindHostToUser', blank=True)),
                 ('host_groups', models.ManyToManyField(to='hosts.HostGroup', blank=True)),
             ],
             options={
