@@ -1,4 +1,4 @@
-#_*_coding:utf-8_*_
+#-_-!coding:utf-8-_-!
 __author__ = 'Alex hao'
 
 import json,models

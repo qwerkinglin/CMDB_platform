@@ -50,7 +50,7 @@ class HostUser(models.Model):
         return "(%s)%s %s" %(self.memo,self.username,self.auth_type)
 
     class Meta:
-        unique_together = ('auth_type','username','password')
+        unique_together = ('auth_type','username','password')   #多字段拼凑一起成为唯一
         verbose_name = u'主机用户'
         verbose_name_plural = u"主机用户"
 
@@ -91,7 +91,7 @@ class BindHostToGroup(models.Model):
 
     def get_hosts(self):
         #return '_'.join([g.host_user.username+"@"+g.host.hostname for g in self.bind_hosts.select_related()])
-        return '_'.join([g.host.hostname for g in self.bind_hosts.select_related()])
+        return '_'.join([g.host.hostname for g in self.bind_hosts.select_related()])    #显示多对多关系
 
 class TaskLog(models.Model):
     start_time = models.DateTimeField(auto_now_add=True)
@@ -121,6 +121,7 @@ class TaskLogDetail(models.Model):
 
     def __unicode__(self):
         return "child of:%s bindhost:%s result:%s" %(self.child_of_task.id,self.bind_host,self.result)
+
     class Meta:
         verbose_name = u'批量任务日志'
         verbose_name_plural = u'批量任务日志'

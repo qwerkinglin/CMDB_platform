@@ -4,4 +4,4 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def projects_index(request):
-    return render(request, "projects/projects.html")
+    return render(request, "projects/projects_index.html")

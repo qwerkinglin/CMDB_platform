@@ -70,10 +70,11 @@ class UserProfileAdmin(UserAdmin):
     list_filter = ('is_admin','date_joined','department')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('name','token','department','tel','mobile','memo')}),
+        ('Personal info', {'fields': ('name','token','department','mobile','memo')}),
         #('API TOKEN info', {'fields': ('token',)}),
         (u'可管理的主机组', {'fields': ('host_groups',)}),
         (u'可管理的主机', {'fields': ('bind_hosts',)}),
+        (u'可管理的Jetty项目组', {'fields': ('project_list',)}),
         ('Permissions', {'fields': ('is_active','is_admin')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -86,4 +87,4 @@ class UserProfileAdmin(UserAdmin):
     )
     search_fields = ('email','department')
     ordering = ('email',)
-    filter_horizontal = ('bind_hosts','host_groups')
+    filter_horizontal = ('bind_hosts','host_groups','project_list')
