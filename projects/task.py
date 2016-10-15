@@ -19,22 +19,21 @@ class Task(object):
 
     def update(self):
         project_id = self.request.POST.get("projectID")
-        host_list = []
-        for h in  hosts_models.BindHostToGroup.objects.get(host_group=project_id).bind_hosts.all():
-            host_list.append(unicode(h.host.id))
-        host_list_id = set(host_list)
-        print host_list_id
+        bind_hosts_user_id_list = []
+        for bind_host in hosts_models.BindHostToGroup.objects.get(host_group=project_id).bind_hosts.all():
+            bind_hosts_user_id_list.append(bind_host.id)
+        bind_hosts_user_id_list = set(bind_hosts_user_id_list)
         task_obj = projects_models.ProjectTaskLog(
             task_type = self.task_type,
             user_id = self.request.user.id,
             #many to many 关系要创建记录后添加
         )
         task_obj.save()
-        task_obj.hosts.add(*host_list_id)
-        # for bind_host_id in host_list_id:
-        #     obj = projects_models.ProjectTaskLogDetail(
-        #         child_of_task_id = task_obj.id,
-        #         bind_host_id = bind_host_id,
-        #         event_log = '<img src="/static/css/plugins/jsTree/throbber.gif" alt="loadimage">',
-        #     )
-        #     obj.save()
+        task_obj.hosts.add(*bind_hosts_user_id_list)
+        for bind_host_id in bind_hosts_user_id_list:
+            obj = projects_models.ProjectTaskLogDetail(
+                child_of_task_id = task_obj.id,
+                bind_host_id = bind_host_id,
+                event_log = '<img src="/static/css/plugins/jsTree/throbber.gif" alt="loadimage">',
+            )
+            obj.save()

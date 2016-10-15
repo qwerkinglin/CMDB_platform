@@ -5,7 +5,7 @@
       <paths name="192.168.10.234">
         <serverdata>
           <mappings>
-            <mapping deploy="/opt/CMDB_Client" local="$PROJECT_DIR$/CMDB_Client" web="/" />
+            <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
