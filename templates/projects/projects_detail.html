@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block content-wrapper %}
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="wrapper wrapper-content animated fadeInUp">
+                    <div class="ibox">
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="m-b-md">
+{#                                        <a href="#" class="btn btn-white btn-xs pull-right">Edit project</a>#}
+                                        <a class="btn btn-info btn-circle btn-lg btn-outline pull-right" type="button" href="/projects"><i class="fa fa-arrow-left"></i></a>
+                                        <h2 class="text-navy">{{ project_detail.project_group }} {{ project_detail.role }}</h2>
+                                    </div>
+                                    <dl class="dl-horizontal">
+                                        <dt>开发者:</dt> <dd>{{ project_detail.developer }}</dd>
+                                        <dt>URL:</dt> <dd>{% for c in project_detail.lb_server.bindhosttogroup_set.all %} {% for h in c.bind_hosts.all %} <a class="text-navy" target="_blank" href="http://{{ h.host.domain }}:{{ project_detail.jetty_port }}/{{ project_detail.jetty_root }}">http://{{ h.host.domain }}:{{ project_detail.jetty_port }}/{{ project_detail.jetty_root }}</a> {% endfor %} {% endfor %}</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-5">
+                                    <dl class="dl-horizontal">
+                                        <dt>项目 ID:</dt> <dd>{{ project_detail.id }}</dd>
+                                        <dt>创建日期:</dt> <dd>{{ project_detail.create_date|date:"Y-m-d H:i:s" }}</dd>
+                                        <dt>Jetty实例名:</dt> <dd>{{ project_detail.jetty_root }}</dd>
+                                        <dt>Jetty根名称:</dt> <dd>{{ project_detail.jetty_name }}</dd>
+                                        <dt>Jetty端口:</dt> <dd>{{ project_detail.jetty_port }}</dd>
+                                        <dt>Jetty路径:</dt> <dd>{{ project_detail.project_path }}</dd>
+                                    </dl>
+                                </div>
+                                <div class="col-lg-7" id="cluster_info">
+                                    <dl class="dl-horizontal" >
+                                        <dt>数据库实例:</dt> <dd>{{ project_detail.db.alias_name }}&nbsp;({{ project_detail.db.ip }})</dd>
+                                        <dt>数据库名称:</dt> <dd>{{ project_detail.db_name }}</dd>
+                                        <dt>数据库账号:</dt> <dd>{{ project_detail.db_user }}</dd>
+                                        <dt>数据库密码:</dt> <dd>{{ project_detail.db_pd }}</dd>
+                                        <dt>缓存地址:</dt> <dd>{{ project_detail.memcached }}&nbsp;({{ project_detail.memcached.ip }}:{{ project_detail.mem_port }})</dd>
+                                        <dt>负载服务器:</dt> <dd>{% for c in project_detail.lb_server.bindhosttogroup_set.all %} {% for h in c.bind_hosts.all %} {{ h.host.hostname }} | {% endfor %} {% endfor %}</dd>
+                                    </dl>
+                                </div>
+                                <div class="col-lg-12">
+                                    <dl class="dl-horizontal">
+                                        <dt>配置文件路径:</dt> <dd>{{ project_detail.conf_path }}</dd>
+                                    </dl>
+                                </div>
+                            </div>
+
+                            <div class="row m-t-sm">
+                                <div class="col-lg-12">
+                                    <div class="panel blank-panel">
+                                        <div class="panel-heading">
+                                            <div class="panel-options">
+                                                <ul class="nav nav-tabs">
+                                                    <li id="tab1-title" class="active"><a href="#tab-1" data-toggle="tab">历史记录</a></li>
+                                                    <li id="tab2-title" class=""><a href="#tab-2" data-toggle="tab">事件状态</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="tab-content">
+                                                <div class="tab-pane active" id="tab-1">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>动作</th>
+                                                        <th>操作者</th>
+                                                        <th>开始时间</th>
+                                                        <th>结束时间</th>
+                                                        <th>备注</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <span class="label label-primary"><i class="fa fa-check"></i> 更新</span>
+                                                            </td>
+                                                            <td>
+                                                               Alexhao
+                                                            </td>
+                                                            <td>
+                                                               2016.09.06 10:10:1
+                                                            </td>
+                                                            <td>
+                                                               2016.09.06 10:12:00
+                                                            </td>
+                                                            <td>
+                                                            <p class="small">
+                                                                更新项目版本
+                                                            </p>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                </div>
+                                                <div class="tab-pane" id="tab-2">
+                                                    <div class="ibox">
+                                                        <div class="ibox-title">
+                                                            <h5>更新项目</h5>
+                                                            <div class="ibox-tools">
+                                                                <button type="button" class="btn btn-primary btn-xs" onclick="collapse_all()">折叠/展开所有</button>
+                                                                <a class="collapse-link">
+                                                                    <i class="fa fa-chevron-up"></i>
+                                                                </a>
+                                                                <a class="fullscreen-link">
+                                                                    <i class="fa fa-expand"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <div id="result-box" class="ibox-content">
+                                                            <h3><strong>未执行任何事件！</strong></h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="wrapper wrapper-content project-manager">
+                    <h4>Project group description</h4>
+                    <img src="/static/img/logo.png" class="img-responsive">
+                    <p class="small font-bold">
+                        <span><i class="fa fa-circle text-info"></i> <span class="text-navy">产品负责人</span> {{ project_detail.project_group.pm }}</span>
+                    </p>
+                    <p class="small font-bold">
+                        <span><i class="fa fa-circle text-info"></i> <span class="text-navy">运营负责人</span> {{ project_detail.project_group.om }}</span>
+                    </p>
+                    <p class="small font-bold">
+                        <span><i class="fa fa-circle text-info"></i> <span class="text-navy">上线日期</span> {{ project_detail.project_group.start_time|date:"Y-m-d H:i:s" }}</span>
+                    </p>
+                    <p class="small font-bold">
+                        <span><i class="fa fa-circle text-info"></i> <span class="text-navy">下线日期</span> {{ project_detail.project_group.end_time|date:"Y-m-d H:i:s" }}</span>
+                    </p>
+                    <p class="small font-bold">
+                        <span><i class="fa fa-circle text-info"></i> <span class="text-navy">运行周期</span> {{ project_detail.project_group.cycle }}</span>
+                    </p>
+                    <p class="small font-bold">
+                        <span><i class="fa fa-circle text-info"></i> <span class="text-navy">URL</span> {{ project_detail.project_group.url }}</span>
+                    </p>
+                    <div class=" m-t-md">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal-update">
+                            更新项目
+                        </button>
+                        <div class="modal inmodal" id="myModal-update" tabindex="-1" role="dialog"  aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content animated fadeIn">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                        <i class="fa fa-exclamation-circle modal-icon"></i>
+                                        <h4 class="modal-title">确认更新项目吗？</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><strong>请确认是否更新此项目!</strong> 更新流程非增量更新,请确认war包的完整性,更新后只保留沿用{{ project_detail.conf_path }}此路径配置文件,其余更新成war包中的新代码.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="ProjectTask('update')">确认</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-info" onclick="ProjectTask('check')">检查项目</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block bottom-js %}
+<script>
+    function ProjectTask(task_type){
+        var data_list = {};
+        data_list['task_type'] = task_type;
+        data_list['csrfmiddlewaretoken'] = $("input[name='csrfmiddlewaretoken']").val();
+        data_list['projectID'] = {{ project_detail.id }}
+        $("#tab1-title,#tab-1").removeClass("active");
+        $("#tab2-title,#tab-2").addClass("active");
+        $.post("{% url 'project_submit_task' %}", data_list, function(callback){
+{#            task_id_obj = JSON.parse(callback);#}
+            console.log(data_list)
+        });  //end post
+    }
+</script>
+{% endblock %}

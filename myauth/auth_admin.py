@@ -57,7 +57,6 @@ class UserChangeForm(forms.ModelForm):
         # field does not have access to the initial value
         return self.initial["password"]
 
-
 class UserProfileAdmin(UserAdmin):
     # The forms to add and change user instances
     form = UserChangeForm
@@ -74,7 +73,8 @@ class UserProfileAdmin(UserAdmin):
         #('API TOKEN info', {'fields': ('token',)}),
         (u'可管理的主机组', {'fields': ('host_groups',)}),
         (u'可管理的主机', {'fields': ('bind_hosts',)}),
-        (u'可管理的Jetty项目组', {'fields': ('project_list',)}),
+        (u'可管理的Jetty项目组', {'fields': ('project_group',)}),
+        (u'可管理的Jetty项目', {'fields': ('projects',)}),
         ('Permissions', {'fields': ('is_active','is_admin')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -87,4 +87,4 @@ class UserProfileAdmin(UserAdmin):
     )
     search_fields = ('email','department')
     ordering = ('email',)
-    filter_horizontal = ('bind_hosts','host_groups','project_list')
+    filter_horizontal = ('bind_hosts','host_groups','project_group','projects')

@@ -107,8 +107,8 @@ class TaskLog(models.Model):
     def __unicode__(self):
         return "taskid:%s cmd:%s" %(self.id,self.cmd)
     class Meta:
-        verbose_name = u'批量任务'
-        verbose_name_plural = u'批量任务'
+        verbose_name = u'批量任务日志'
+        verbose_name_plural = u'批量任务日志'
 
 class TaskLogDetail(models.Model):
     child_of_task = models.ForeignKey('TaskLog')
@@ -123,8 +123,8 @@ class TaskLogDetail(models.Model):
         return "child of:%s bindhost:%s result:%s" %(self.child_of_task.id,self.bind_host,self.result)
 
     class Meta:
-        verbose_name = u'批量任务日志'
-        verbose_name_plural = u'批量任务日志'
+        verbose_name = u'批量任务日志详情'
+        verbose_name_plural = u'批量任务日志详情'
 
 class NewAssetApprovalZone(models.Model):
     sn = models.CharField(u'资产SN',max_length=128, unique=True)

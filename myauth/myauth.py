@@ -67,7 +67,8 @@ class UserProfile(AbstractBaseUser):
 
     host_groups = models.ManyToManyField("hosts.HostGroup",blank=True)
     bind_hosts = models.ManyToManyField("hosts.BindHostToUser",blank=True)
-    project_list = models.ManyToManyField("projects.ProjectGroup",blank=True)
+    project_group = models.ManyToManyField("projects.ProjectGroup",blank=True)
+    projects = models.ManyToManyField("projects.ProjectList",blank=True)
 
     USERNAME_FIELD = 'email'
     #REQUIRED_FIELDS = ['name','token','department','tel','mobile','memo']

@@ -1,6 +1,6 @@
 #_*_coding:utf-8_*_
 import models,os,json
-import  subprocess
+import subprocess
 from django.db import transaction
 from CMDB_platform import settings
 

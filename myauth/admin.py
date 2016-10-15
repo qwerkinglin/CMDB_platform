@@ -36,13 +36,12 @@ class AssetApprovalZoneAdmin(admin.ModelAdmin):
         return HttpResponseRedirect("/hosts/new_assets/approval/?ct=%s&ids=%s" % (ct.pk, ",".join(selected)))
     approve_selected_objects.short_description = "批准资产入库"
 
-
 class ProjectListAdmin(admin.ModelAdmin):
-    list_display = ('project_group','developer','jetty_name','jetty_root','jetty_port','db','db_name','db_user','db_pd','memcached','mem_port','project_path','conf_path','online_state','create_date')
+    list_display = ('project_group','developer','jetty_name','jetty_root','role','jetty_port','db','db_name','db_user','db_pd','memcached','mem_port','project_path','conf_path','online_state','create_date')
     list_filter = ('developer','db','memcached')
 
 class ProjectGroupAdmin(admin.ModelAdmin):
-    list_display = ('name','cycle','start_time','end_time','pm','om','url')
+    list_display = ('name','cycle','start_time','end_time','pm','om','url','enabled')
 
 class ProjectDatabaseAdmin(admin.ModelAdmin):
     list_display = ('instance_name','alias_name','ip','port','user','passwd','url')
