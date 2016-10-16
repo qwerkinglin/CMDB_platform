@@ -81,13 +81,14 @@ class MemList(models.Model):
 class ProjectTaskLog(models.Model):
     start_time = models.DateTimeField(auto_now_add=True)
     end_time = models.DateTimeField(null=True,blank=True)
-    task_type_choices = (('update',"更新项目"),('check',"检测项目"),)
+    task_type_choices = (('update','更新项目'),('check','检测项目'),)
     task_type = models.CharField(choices=task_type_choices,max_length=50)
     user = models.ForeignKey('myauth.UserProfile')
     hosts = models.ManyToManyField('hosts.BindHostToUser')
     expire_time = models.IntegerField(default=30)
     task_pid = models.IntegerField(default=0)
     note = models.CharField(max_length=100,blank=True,null=True)
+    belong_to_project = models.ForeignKey('ProjectList')
 
     def __unicode__(self):
         return "taskid:%s cmd:%s" %(self.id,self.task_type)

@@ -26,6 +26,7 @@ class Task(object):
         task_obj = projects_models.ProjectTaskLog(
             task_type = self.task_type,
             user_id = self.request.user.id,
+            belong_to_project_id = project_id
             #many to many 关系要创建记录后添加
         )
         task_obj.save()

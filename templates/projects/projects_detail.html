@@ -72,25 +72,27 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
+                                                        {% for logs in project_detail.projecttasklog_set.all %}
                                                         <tr>
                                                             <td>
-                                                                <span class="label label-primary"><i class="fa fa-check"></i> 更新</span>
+                                                                <span class="label label-primary"><i class="fa fa-check"></i> {{ logs.task_type }}</span>
                                                             </td>
                                                             <td>
-                                                               Alexhao
+                                                               {{ logs.user }}
                                                             </td>
                                                             <td>
-                                                               2016.09.06 10:10:1
+                                                               {{ logs.start_time|date:"Y-m-d H:i:s" }}
                                                             </td>
                                                             <td>
-                                                               2016.09.06 10:12:00
+                                                               {{ logs.end_time|date:"Y-m-d H:i:s" }}
                                                             </td>
                                                             <td>
                                                             <p class="small">
-                                                                更新项目版本
+                                                                {{ logs.note }}
                                                             </p>
                                                             </td>
                                                         </tr>
+                                                        {% endfor %}
                                                     </tbody>
                                                 </table>
                                                 </div>
@@ -185,7 +187,7 @@
         $.post("{% url 'project_submit_task' %}", data_list, function(callback){
 {#            task_id_obj = JSON.parse(callback);#}
             console.log(data_list)
-        });  //end post
+        });//end post
     }
 </script>
 {% endblock %}

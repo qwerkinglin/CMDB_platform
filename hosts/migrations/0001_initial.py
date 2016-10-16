@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('sn', models.CharField(unique=True, max_length=128)),
                 ('hostname', models.CharField(max_length=64)),
-                ('wan_ip', models.GenericIPAddressField(unique=True)),
+                ('wan_ip', models.GenericIPAddressField()),
                 ('lan_ip', models.GenericIPAddressField(unique=True)),
                 ('domain', models.CharField(max_length=128)),
                 ('cpu', models.CharField(max_length=16)),
@@ -93,6 +93,29 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
+            name='NewAssetApprovalZone',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('sn', models.CharField(unique=True, max_length=128, verbose_name='\u8d44\u4ea7SN')),
+                ('asset_type', models.CharField(blank=True, max_length=64, null=True, choices=[(b'server', '\u670d\u52a1\u5668'), (b'switch', '\u4ea4\u6362\u673a'), (b'router', '\u8def\u7531\u5668'), (b'firewall', '\u9632\u706b\u5899'), (b'storage', '\u5b58\u50a8\u8bbe\u5907'), (b'wireless', '\u65e0\u7ebfAP'), (b'others', '\u5176\u5b83')])),
+                ('wan_ip', models.GenericIPAddressField()),
+                ('lan_ip', models.GenericIPAddressField(unique=True)),
+                ('cpu_num', models.CharField(max_length=16)),
+                ('memory_size', models.CharField(max_length=16)),
+                ('disk_size', models.CharField(max_length=16)),
+                ('os_version', models.CharField(max_length=64)),
+                ('ssh_port', models.IntegerField(default=38096)),
+                ('data', models.TextField(verbose_name='\u8d44\u4ea7\u6570\u636e')),
+                ('date', models.DateTimeField(auto_now_add=True, verbose_name='\u6c47\u62a5\u65e5\u671f')),
+                ('approved', models.BooleanField(default=False, verbose_name='\u5df2\u6279\u51c6')),
+                ('approved_date', models.DateTimeField(null=True, verbose_name='\u6279\u51c6\u65e5\u671f', blank=True)),
+            ],
+            options={
+                'verbose_name': '\u65b0\u4e0a\u7ebf\u5f85\u6279\u51c6\u8d44\u4ea7',
+                'verbose_name_plural': '\u65b0\u4e0a\u7ebf\u5f85\u6279\u51c6\u8d44\u4ea7',
+            },
+        ),
+        migrations.CreateModel(
             name='TaskLog',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -106,8 +129,8 @@ class Migration(migrations.Migration):
                 ('hosts', models.ManyToManyField(to='hosts.BindHostToUser')),
             ],
             options={
-                'verbose_name': '\u6279\u91cf\u4efb\u52a1',
-                'verbose_name_plural': '\u6279\u91cf\u4efb\u52a1',
+                'verbose_name': '\u6279\u91cf\u4efb\u52a1\u65e5\u5fd7',
+                'verbose_name_plural': '\u6279\u91cf\u4efb\u52a1\u65e5\u5fd7',
             },
         ),
         migrations.CreateModel(
@@ -122,8 +145,8 @@ class Migration(migrations.Migration):
                 ('child_of_task', models.ForeignKey(to='hosts.TaskLog')),
             ],
             options={
-                'verbose_name': '\u6279\u91cf\u4efb\u52a1\u65e5\u5fd7',
-                'verbose_name_plural': '\u6279\u91cf\u4efb\u52a1\u65e5\u5fd7',
+                'verbose_name': '\u6279\u91cf\u4efb\u52a1\u65e5\u5fd7\u8be6\u60c5',
+                'verbose_name_plural': '\u6279\u91cf\u4efb\u52a1\u65e5\u5fd7\u8be6\u60c5',
             },
         ),
     ]
