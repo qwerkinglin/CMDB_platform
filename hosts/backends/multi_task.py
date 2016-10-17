@@ -1,13 +1,13 @@
 #_*_coding:utf-8_*_
 import os,sys
-BaseDir = "\\".join(os.path.dirname(os.path.abspath(__file__)).split('\\')[:-2])
+BaseDir = "\\".join(os.path.dirname(os.path.abspath(__file__)).split('\\')[:-2])  #在linux平台请把 \\ 改为 /
 sys.path.append(BaseDir)    #加入系统环境变量
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "CMDB_platform.settings")       #加入django的环境变量
 from hosts import models
 import django
 import multiprocessing,paramiko_handle
 from django.core.exceptions import ObjectDoesNotExist
-django.setup() #allow outsider scripts invoke django db models
+django.setup() #允许外部脚本调用Django的数据库models
 
 def by_paramiko(task_id):
     try:

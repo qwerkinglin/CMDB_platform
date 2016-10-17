@@ -22,7 +22,7 @@ from hosts import rest_urls
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^api/', include(rest_urls)),
+    #url(r'^api/', include(rest_urls)),
     url(r'^$', myauth_view.index, name='index'),
     url(r'^login/$', myauth_view.acc_login, name='login'),
     url(r'^logout/$', myauth_view.acc_logout, name='logout'),

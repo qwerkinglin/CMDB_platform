@@ -3,6 +3,7 @@ __author__ = 'Alex hao'
 
 import models as projects_models
 import hosts.models as hosts_models
+from backends import ansible_project_task
 
 class Task(object):
     def __init__(self,request):
@@ -30,7 +31,7 @@ class Task(object):
             #many to many 关系要创建记录后添加
         )
         task_obj.save()
-        task_obj.hosts.add(*bind_hosts_user_id_list)
+        task_obj.hosts.add(*bind_hosts_user_id_list)    #多对多关系添加需要传入 *加id列表
         for bind_host_id in bind_hosts_user_id_list:
             obj = projects_models.ProjectTaskLogDetail(
                 child_of_task_id = task_obj.id,
@@ -38,3 +39,7 @@ class Task(object):
                 event_log = '<img src="/static/css/plugins/jsTree/throbber.gif" alt="loadimage">',
             )
             obj.save()
+
+        ansible_result = ansible_project_task.ansible_runner()
+        print ansible_result
+        return {'task_id':task_obj.id}

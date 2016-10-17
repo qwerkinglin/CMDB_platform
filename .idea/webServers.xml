@@ -9,6 +9,13 @@
           </advancedOptions>
         </fileTransfer>
       </webServer>
+      <webServer id="1e774430-be08-4c35-ae25-63fbfee48397" name="CMDB_platform" url="http://192.168.10.234">
+        <fileTransfer host="192.168.10.234" port="22" accessType="SFTP" password="dfdddfd3dfc1dfc0df98df9adf9bdf9edf84" username="root">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

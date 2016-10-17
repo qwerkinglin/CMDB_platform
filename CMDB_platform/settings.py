@@ -83,7 +83,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cmdb',
-        'HOST':'127.0.0.1',
+        'HOST':'192.168.10.139',
         'USER':'cmdb',
         'PASSWORD':'cmdb'
     }
@@ -115,6 +115,7 @@ STATICFILES_DIRS = [
 LOGIN_URL = '/login/'
 
 MultiTaskScript = "%s/hosts/backends/multi_task.py" % BASE_DIR
+ProjectScript = "%s/projects/backends/update.py" % BASE_DIR
 MultiTaskRunType = 'by_paramiko'
 FileUploadDir = '%s/uploads' % BASE_DIR
 TOKEN_TIMEOUT = 120

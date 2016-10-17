@@ -29,7 +29,7 @@ class Task(object):
             cmd = cmd,
         )
         task_obj.save()
-        task_obj.hosts.add(*selected_hosts) #添加many to many 关系 必须传入id 传入列表的时候前面加*号
+        task_obj.hosts.add(*selected_hosts) #添加many to many 关系 必须传入id   传入列表的时候前面加*号
 
         #create task detail for all hosts will be executed
         for bind_host_id in selected_hosts:
@@ -46,7 +46,7 @@ class Task(object):
             '-task_id',str(task_obj.id),
             '-run_type',settings.MultiTaskRunType,
         ])
-        # 获取该进程pid 在linux有效 上行代码用后面代码替换  ],preexec_fn=os.setsid)
+        # 获取该进程pid在linux有效 上行代码用后面尖括号内代码替换<  ],preexec_fn=os.setsid)  >
         # print '---->pid:',p.pid    #通过此方法获取pid 可用于强制结束该任务
         return {'task_id':task_obj.id}
 
@@ -78,7 +78,7 @@ class Task(object):
                 event_log = '<img src="/static/css/plugins/jsTree/throbber.gif" alt="loadimage">',  #前端loading图标初始化
             )
             obj.save()
-         #invoke backens mylti_task script
+         #invoke backends multi_task script
         p = subprocess.Popen([
             'python',
             settings.MultiTaskScript,
@@ -87,7 +87,6 @@ class Task(object):
         ])
         # 获取该进程pid 在linux有效 上行代码用后面代码替换  ],preexec_fn=os.setsid)
         # print '---->pid:',p.pid    #通过此方法获取pid 可用于强制结束该任务
-
         return {'task_id':task_obj.id}
 
     def get_task_result(self):
