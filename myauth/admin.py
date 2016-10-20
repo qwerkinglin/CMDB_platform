@@ -49,6 +49,7 @@ class ProjectDatabaseAdmin(admin.ModelAdmin):
 class ProjectMemAdmin(admin.ModelAdmin):
     list_display = ('instance_name','alias_name','ip')
 
+
 admin.site.register(models.UserProfile,auth_admin.UserProfileAdmin)
 admin.site.register(host_models.Host,HostAdmin)
 admin.site.register(host_models.HostGroup)
@@ -63,3 +64,5 @@ admin.site.register(project_models.ProjectList,ProjectListAdmin)
 admin.site.register(project_models.ProjectGroup,ProjectGroupAdmin)
 admin.site.register(project_models.DatabaseList,ProjectDatabaseAdmin)
 admin.site.register(project_models.MemList,ProjectMemAdmin)
+admin.site.register(project_models.ProjectTaskLog)
+admin.site.register(project_models.ProjectTaskLogDetail)

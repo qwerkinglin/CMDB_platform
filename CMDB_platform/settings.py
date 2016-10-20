@@ -115,7 +115,8 @@ STATICFILES_DIRS = [
 LOGIN_URL = '/login/'
 
 MultiTaskScript = "%s/hosts/backends/multi_task.py" % BASE_DIR
-ProjectScript = "%s/projects/backends/update.py" % BASE_DIR
+ProjectUpdateScript = "%s/projects/backends/test.sh" % BASE_DIR
+Private_Key = "%s/myauth/.id_rsa" % BASE_DIR
 MultiTaskRunType = 'by_paramiko'
 FileUploadDir = '%s/uploads' % BASE_DIR
 TOKEN_TIMEOUT = 120

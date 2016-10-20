@@ -83,7 +83,6 @@ def paramiko_ssh(task_id,host_obj,task_content):
     log_obj.event_log = cmd_result
     log_obj.date = timezone.now()
     log_obj.result = result
-
     log_obj.save()
 
 
