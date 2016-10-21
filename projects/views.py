@@ -13,14 +13,14 @@ def projects_index(request):
     return render(request, "projects/projects_index.html")
 
 @login_required
-def submit_task(request):
+def project_submit_task(request):
     tas_obj = task.Task(request)
     res = tas_obj.handle()
     return HttpResponse(json.dumps(res))
 
 @login_required
-def get_task_result(request):
+def get_project_result(request):
     task_obj = task.Task(request)
-    res = task_obj.get_task_result()
+    res = task_obj.get_project_result()
     return HttpResponse(json.dumps(res,default=utils.json_date_handler))
 

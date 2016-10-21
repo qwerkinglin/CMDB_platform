@@ -194,6 +194,12 @@
             $('.footable').footable();
         });
 
+        function collapse_all(){
+            $('#result-box').find("a").each(function(i,val){
+                $('#result-box a')[i].click();      //toggle收缩所有任务信息窗口,找到a标签后加入[i] <模拟点击收缩按钮>
+            })
+        }
+
         function ProjectTask(task_type){
             var data_list = {};
             data_list['task_type'] = task_type;
@@ -203,25 +209,27 @@
             $("#tab2-title,#tab-2").addClass("active");
             $.post("{% url 'project_submit_task' %}", data_list, function(callback){
                 task_id_obj = JSON.parse(callback);
-                console.log(task_id_obj)
-                RefreshGetTaskResult(task_id_obj.task_id);
+{#                console.log(task_id_obj);#}
+                RefreshGetProjectResult(task_id_obj.task_id);
             });//end post
         }
 
-        function RefreshGetTaskResult(task_id){
-            GetTaskResult(task_id);
-            ResultRefresh = setInterval(function(){
+        function RefreshGetProjectResult(task_id){
+            GetProjectResult(task_id);
+            ProjectResultRefresh = setInterval(function(){
                 var stat_list = [];
                 var load_image_html = '<img src="/static/css/plugins/jsTree/throbber.gif" alt="loadimage">';
                 $('#result-box').find("pre").each(function(i,val){
                     var res = $(this).html();
                     stat_list.push(res);
                     if (res == load_image_html){
-                        GetTaskResult(task_id);
+                        GetProjectResult(task_id);
                     }
                 });
+
+{#                判断页面中还有没有loading图标#}
                 if(stat_list.indexOf(load_image_html) == -1){
-                    clearInterval(ResultRefresh);  //清除定时器
+                    clearInterval(ProjectResultRefresh);  //清除定时器
                     $('#result-box div.ibox-tools label:first-child').each(function(){
                         var status_res = $(this).html();
                         if (status_res == 'failed'){
@@ -232,20 +240,20 @@
             },2000);
         }
 
-        function GetTaskResult(task_id){
-            $.getJSON("{% url 'get_task_result' %}", {task_id:task_id}, function(callback){
-                PrintOnPage(callback);
+        function GetProjectResult(task_id){
+            $.getJSON("{% url 'get_project_result' %}", {task_id:task_id}, function(callback){
+                ProjectPrintOnPage(callback);
             }); //end getJSON
         }
 
-        function PrintOnPage(callback){
+        function ProjectPrintOnPage(callback){
             $('#result-box').html(" ");
             $.each(callback,function(index,item){
                 var row_html =  '<div class="ibox">'+
                                     '<div class="ibox-title">'+
                                         '<h5>'+item.bind_host__host_user__username+'@'+item.bind_host__host__hostname+'</h5>'+
                                         '<div class="ibox-tools">'+
-                                            '<label class="label label-info">'+item.result+'</label>'+
+                                            '<label class="label label-primary">'+item.result+'</label>'+
                                             '<label class="label label-info">'+item.bind_host__host__wan_ip+'|'+item.bind_host__host__lan_ip+'</label>'+
                                             '<label class="label label-info">'+item.date+'</label>'+
                                             '<a class="collapse-link">'+

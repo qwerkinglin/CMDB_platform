@@ -13,9 +13,6 @@ from CMDB_platform import settings
 
 # Create a callback object so we can capture the output
 class ResultsCollector(CallbackBase):
-    # CALLBACK_VERSION = 2.0
-    # CALLBACK_TYPE = 'stdout'
-    # CALLBACK_NAME = 'json'
 
     def __init__(self, display=None):
         super(ResultsCollector, self).__init__(display)
@@ -120,4 +117,3 @@ if __name__ == '__main__':          #测试用
     module = 'raw'
     args = 'ifconfig'
     main(host_list,module,args)
-
