@@ -50,15 +50,40 @@ class Task(object):
         except Exception,e:
             print e
 
-    @transaction.atomic #函数执行完成后统一commit到数据库
+    @transaction.atomic     #函数执行完成后统一commit到数据库
     def update(self):
-        self.ansible_module = "script"       #ansible调用的模块
-        aaa = "/data/webapp/"
-        bbb = "jetty-ronghe3/setup.properties"
-        ccc = "2ffd 4g"
-        ansible_script_args = ' '+ '"%s"'%aaa +' '+ '"%s"'%bbb +' '+ '"%s"'%ccc     #ansible script模块脚本参数
-        self.ansible_args = settings.ProjectUpdateScript + ansible_script_args               #ansible模块参数
         project_id = self.request.POST.get("projectID")
+        self.ansible_module = "script"       #ansible调用的模块
+        project_obj = projects_models.ProjectList.objects.get(id=project_id)
+
+        project_title = project_obj.jetty_name
+        project_info = project_obj.project_group.name
+        project_name = project_obj.jetty_root
+        project_port = project_obj.jetty_port
+        mysql_server = project_obj.db.ip
+        mysql_database = project_obj.db_name
+        mysql_user = project_obj.db_user
+        mysql_passwd = project_obj.db_pd
+        mem_server = project_obj.memcached.ip
+        mem_port = project_obj.mem_port
+        PROJECT_PATH = project_obj.project_path
+        CONFIG_FILE = project_obj.conf_path
+
+        #ansible script模块脚本参数
+        ansible_script_args = ' '+ '"%s"'%project_title +\
+                              ' '+ '"%s"'%project_info +\
+                              ' '+ '"%s"'%project_name +\
+                              ' '+ '"%s"'%project_port +\
+                              ' '+ '"%s"'%mysql_server +\
+                              ' '+ '"%s"'%mysql_database +\
+                              ' '+ '"%s"'%mysql_user +\
+                              ' '+ '"%s"'%mysql_passwd +\
+                              ' '+ '"%s"'%mem_server +\
+                              ' '+ '"%s"'%mem_port +\
+                              ' '+ '"%s"'%PROJECT_PATH +\
+                              ' '+ '"%s"'%CONFIG_FILE
+
+        self.ansible_args = settings.ProjectUpdateScript + ansible_script_args               #ansible模块参数
         self.bind_hosts_user_id_list = []
         self.host_ip_list = []
         for bind_host in hosts_models.BindHostToGroup.objects.get(host_group=project_id).bind_hosts.all():

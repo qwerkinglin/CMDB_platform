@@ -1,33 +1,4 @@
 #!/bin/bash
-function checkdblogin()
-{
-    /usr/bin/which mysql > /dev/null 2>&1
-    if [ ! $? -eq 0 ];then
-        yum install mysql -y > /dev/null 2>&1
-		if [ ! $? -eq 0 ]; then
-			echo "The mysql client install fail! Check mysql fail!"
-			exit 1
-		fi
-    fi
-	
-    mysqlch=`mysql -u$DB_s_user -p$DB_s_passwd -h$DB_s_server -e 'show databases;' | grep -w "$DB_s_database" | grep -v 'Access denied'`
-    if [[ ! $mysqlch == $DB_s_database ]] ;then
-		echo -e "\033[0;31;25mDatabase connection failed!\033[0m"
-        exit 1
-    fi
-}
-
-function checkproject()
-{
-    if [ ! $project_id ]; then
-        echo -e "Project \033[0;31;25m$1\033[0m isn\`t in database"
-        exit 1
-    fi
-    if [ $project_state == 0 ]; then
-        echo -e "Project \033[0;31;25m$1\033[0m has been offline"
-        exit 1
-    fi
-}
 
 function cpjetty()
 {
@@ -77,7 +48,7 @@ function checkfw()
 {
 iptables -nL | grep ":$project_port" > /dev/null 2>&1
 if [ $? -eq 0 ]; then
-    echo -e "\033[0;32;25mPort $project_port OK\033[0m"
+    echo -e "Port $project_port OK"
 else
     PNR=`awk '{for(i=1;i<=NF;i++)if($i~/^[0-9]*[1-9][0-9]*$/) for(t=1;t<=NF;t++)if($t~/tcp/) for(k=1;k<=NF;k++)if($k~/INPUT/) for(a=1;a<=NF;a++)if($a~/ACCEPT/) if('$project_port'-$i<0 && $t=="tcp" && $k=="INPUT" && $a=="ACCEPT") print NR}' /etc/sysconfig/iptables |head -1`
     if [ ! $PNR ]; then
@@ -88,9 +59,9 @@ else
     iptables-restore </etc/sysconfig/iptables
     iptables -nL | grep ":$project_port" > /dev/null 2>&1
     if [ ! $? -eq 0 ]; then
-        echo -e "\033[0;31;25mAdd port $project_port fail!\033[0m"
+        echo -e "Add port $project_port fail!"
     else
-        echo -e "\033[0;32;25mAdd port $project_port succeed!\033[0m"
+        echo -e "Add port $project_port succeed!"
     fi
 fi
 }
@@ -99,9 +70,9 @@ function checkmysql()
 {
     mysqllogin=`mysql -h${mysql_server} -u${mysql_user} -p${mysql_passwd} -e 'show databases;' 2>/dev/null | grep -w "$mysql_database" | grep -v 'Access denied'`
     if [[ $mysqllogin = $mysql_database ]] ;then
-		echo -e "\033[0;32;25mMysql OK\033[0m"
+		echo -e "Mysql OK"
     else
-		echo -e "\033[0;31;25mMysql not OK\033[0m"
+		echo -e "Mysql not OK"
     fi
 }
 
@@ -117,18 +88,17 @@ function checkmem()
     fi
     
     if [[ -n `nc -vw 2 ${mem_server} -z ${mem_port} 2>/dev/null | grep -w 'succeeded!'` ]] ;then
-    	echo -e "\033[0;32;25mMem Ok\033[0m"
+    	echo -e "Mem Ok"
     else
-    	echo -e "\033[0;31;25mMem not OK\033[0m"
+    	echo -e "Mem not OK"
     fi
 }
 
 function deploywar()
 {
     echo "********************************************************"
-    echo -e "Ready for \033[0;31;25m <<<Deploy>>> \033[0m project!"
-    echo "********************************************************"
-    echo "********************************************************"
+    echo -e "Ready for <<<Deploy>>> project!"
+
     cd $PROJECT_PATH/webapps/$project_name
     jar xf /root/$project_name.war
     dirpro=`ls $PROJECT_PATH/webapps/$project_name`
@@ -159,15 +129,15 @@ function startproject()
     #echo -en "To \033[0;32;25mStart\033[0m the project? [y/n]:"
     #read char
     #if [ $char == y ]; then
-    echo "******************start project info********************"
+    echo "******************Start project info********************"
     /data/webapp/jetty-root.sh start $project_title
-    echo "******************start project info********************"    
+
     #fi
 }
 
 function whdeploypj()
 {    
-    echo -en "Make sure \033[0;31;25mDeploy\033[0m the project? [y/n]:"
+    echo -en "Make sure Deploy the project? [y/n]:"
     read char
     if [ $char != y ]; then
         exit 1
@@ -176,7 +146,7 @@ function whdeploypj()
 
 function whupdatepj()
 {    
-    echo -en "Make sure \033[0;32;25mUpdate\033[0m the project? [y/n]:"
+    echo -en "Make sure Update the project? [y/n]:"
     read char
     if [ $char != y ]; then
         exit 1
@@ -216,11 +186,10 @@ function checkmount()
 function updatepj()
 {
     echo "********************************************************"
-    echo -e "Ready for \033[0;31;25m <<<Update>>> \033[0m project!"
-    echo "********************************************************"
+    echo -e "Ready for <<<Update>>> project!"
     echo "******************stop project info*********************"
     /data/webapp/jetty-root.sh stop $project_title
-    echo "******************stop project info*********************"    
+
     sleep 1
 	checkmount myumount
     cd $PROJECT_PATH/webapps/
@@ -280,13 +249,7 @@ function updatepj()
 
 function printinfo()
 {
-    IPAD=`ifconfig eth0|sed -n "2,2p"|awk '{print substr($2,6)}'`
-    alias_all=`mysql -u$DB_s_user -p$DB_s_passwd -h$DB_s_server $DB_s_database -e "select * from $DB_s_table_alias where inner_ip='$IPAD'" | tail -n +2`
-    IPURL=`echo "$alias_all" | awk -F"\t" '{print $5}'`
 	echo "################################################################################"
-    echo "Project info: $project_info $lb_server"
-    echo -e "Project URL : \033[0;32;25mhttp://$IPURL:$project_port/$project_name\033[0m"
-    #echo "Project URL : http://$IPURL:$project_port/$project_name"
     echo "Project path: $PROJECT_PATH"
     echo "mysql info  : $mysql_server $mysql_database $mysql_user $mysql_passwd"
     echo "memcached   : $mem_server:$mem_port"
@@ -309,31 +272,19 @@ if [ $# != 1 ] ; then		#参数检测
     exit 1;
 fi
 
-DB_s_server=10.249.169.202
-DB_s_user=project_list
-DB_s_passwd=wykj2014.
-DB_s_database=project_list
-DB_s_table=pj_list
-DB_s_table_alias=alias_list
+project_title=${1}
+project_info=${2}
+project_name=${3}
+project_port=${4}
+mysql_server=${5}
+mysql_database=${6}
+mysql_user=${7}
+mysql_passwd=${8}
+mem_server=${9}
+mem_port=${10}
+PROJECT_PATH=${11}
+CONFIG_FILE=${12}
 
-checkdblogin
-project_all=`mysql -u$DB_s_user -p$DB_s_passwd -h$DB_s_server $DB_s_database -e "select * from $DB_s_table where id='$1'" | tail -n +2`
-project_id=`echo "$project_all" | awk -F"\t" '{print $1}'`
-project_state=`echo "$project_all" | awk -F"\t" '{print $17}'`
-checkproject $1	#检查数据库中项目是否存在
-project_title=`echo "$project_all" | awk -F"\t" '{print $2}'`
-project_info=`echo "$project_all" | awk -F"\t" '{print $3}'`
-lb_server=`echo "$project_all" | awk -F"\t" '{print $4}'`
-project_name=`echo "$project_all" | awk -F"\t" '{print $5}'`
-project_port=`echo "$project_all" | awk -F"\t" '{print $6}'`
-mysql_server=`echo "$project_all" | awk -F"\t" '{print $7}'`
-mysql_database=`echo "$project_all" | awk -F"\t" '{print $8}'`
-mysql_user=`echo "$project_all" | awk -F"\t" '{print $9}'`
-mysql_passwd=`echo "$project_all" | awk -F"\t" '{print $10}'`
-mem_server=`echo "$project_all" | awk -F"\t" '{print $11}'`
-mem_port=`echo "$project_all" | awk -F"\t" '{print $12}'`
-PROJECT_PATH=`echo "$project_all" | awk -F"\t" '{print $13}'`
-CONFIG_FILE=`echo "$project_all" | awk -F"\t" '{print $14}'`
 mount_s=`cat /proc/mounts |grep $PROJECT_PATH|awk '{print $1}'`
 mount_d=`cat /proc/mounts |grep $PROJECT_PATH|awk '{print $2}'`
 
@@ -357,7 +308,7 @@ if [ -e "/root/$project_name.war" ]; then	#判断war包是否存在
 			#whdeploypj
             deploywar        #部署项目
             startproject
-            printinfo
+            #printinfo
         else
 			#whupdatepj
             updatepj         #更新项目
@@ -369,10 +320,9 @@ if [ -e "/root/$project_name.war" ]; then	#判断war包是否存在
         mkdir $PROJECT_PATH/webapps/$project_name > /dev/null 2>&1      #创建目录后部署
         deploywar            #部署项目
         startproject
-        printinfo
+        #printinfo
     fi
     rm -f /root/$project_name.war
 else
     echo "Please check $project_name.war in /root/ path!"
 fi
-
