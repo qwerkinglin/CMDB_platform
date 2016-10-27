@@ -7,7 +7,7 @@ from CMDB_platform import settings
 def paramiko_sftp(task_id,host_obj,task_content,task_type,user_id):
     bind_host = host_obj
     try:
-        t = paramiko.Transport((bind_host.host.wan_ip,int(bind_host.host.port) ))
+        t = paramiko.Transport((bind_host.host.lan_ip,int(bind_host.host.port) ))
         if bind_host.host_user.auth_type == 'ssh-password':
             t.connect(username=bind_host.host_user.username,password=bind_host.host_user.password)
         else:
@@ -48,7 +48,7 @@ def paramiko_ssh(task_id,host_obj,task_content):
 
     try:
         if bind_host.host_user.auth_type == 'ssh-password':
-            s.connect(bind_host.host.wan_ip,
+            s.connect(bind_host.host.lan_ip,
                       int(bind_host.host.port),
                       bind_host.host_user.username,
                       bind_host.host_user.password,

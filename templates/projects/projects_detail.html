@@ -57,7 +57,8 @@
                                             <div class="panel-options">
                                                 <ul class="nav nav-tabs">
                                                     <li id="tab1-title" class="active"><a href="#tab-1" data-toggle="tab">历史记录</a></li>
-                                                    <li id="tab2-title" class=""><a href="#tab-2" data-toggle="tab">事件状态</a></li>
+                                                    <li id="tab2-title" class=""><a href="#tab-2" data-toggle="tab">事件详情</a></li>
+                                                    <li id="tab3-title" class=""><a href="#tab-3" data-toggle="tab">项目状态</a></li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -105,8 +106,6 @@
                                                         </tr>
                                                         </tfoot>
                                                     </table>
-
-
                                                 </div>
                                                 <div class="tab-pane" id="tab-2">
                                                     <div class="ibox">
@@ -127,6 +126,38 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="tab-pane" id="tab-3">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>服务器</th>
+                                                            <th>进程状态</th>
+                                                            <th>端口状态</th>
+                                                            <th>防火墙状态</th>
+                                                            <th>数据库连接状态</th>
+                                                            <th>缓存连接状态</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr>
+                                                            <td>app10</td>
+                                                            <td><span class="badge badge-primary">ok</span></td>
+                                                            <td><span class="badge badge-danger">error</span></td>
+                                                            <td><span class="badge badge-primary">ok</span></td>
+                                                            <td><span class="badge badge-primary">ok</span></td>
+                                                            <td><span class="badge badge-primary">ok</span></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>app20</td>
+                                                            <td><span class="badge badge-primary">ok</span></td>
+                                                            <td><span class="badge badge-primary">ok</span></td>
+                                                            <td><span class="badge badge-primary">ok</span></td>
+                                                            <td><span class="badge badge-primary">ok</span></td>
+                                                            <td><span class="badge badge-primary">ok</span></td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -140,6 +171,7 @@
                 <div class="wrapper wrapper-content project-manager">
                     <h4>Project group description</h4>
                     <img src="/static/img/logo.png" class="img-responsive">
+                    <br>
                     <p class="small font-bold">
                         <span><i class="fa fa-circle text-info"></i> <span class="text-navy">产品负责人</span> {{ project_detail.project_group.pm }}</span>
                     </p>
@@ -171,7 +203,7 @@
                                         <h4 class="modal-title">确认更新项目吗？</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <p><strong>请确认是否更新此项目!</strong> 更新流程非增量更新,请确认war包的完整性,更新后只保留沿用{{ project_detail.conf_path }}此路径配置文件,其余更新成war包中的新代码.</p>
+                                        <p><strong>请确认是否更新此项目!</strong> 此更新流程非增量更新,请确认war包的完整性,更新后只保留沿用{{ project_detail.conf_path }}此路径配置文件,其余为war包中的新代码.</p>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
@@ -201,17 +233,33 @@
         }
 
         function ProjectTask(task_type){
-            var data_list = {};
-            data_list['task_type'] = task_type;
-            data_list['csrfmiddlewaretoken'] = $("input[name='csrfmiddlewaretoken']").val();
-            data_list['projectID'] = {{ project_detail.id }}
-            $("#tab1-title,#tab-1").removeClass("active");
-            $("#tab2-title,#tab-2").addClass("active");
-            $.post("{% url 'project_submit_task' %}", data_list, function(callback){
-                task_id_obj = JSON.parse(callback);
-{#                console.log(task_id_obj);#}
-                RefreshGetProjectResult(task_id_obj.task_id);
-            });//end post
+            if (task_type == "update"){
+                var data_list = {};
+                data_list['task_type'] = task_type;
+                data_list['csrfmiddlewaretoken'] = $("input[name='csrfmiddlewaretoken']").val();
+                data_list['projectID'] = {{ project_detail.id }}
+                $("#tab1-title,#tab-1").removeClass("active");
+                $("#tab3-title,#tab-3").removeClass("active");
+                $("#tab2-title,#tab-2").addClass("active");
+                $.post("{% url 'project_submit_task' %}", data_list, function(callback){
+                    task_id_obj = JSON.parse(callback);
+    {#                console.log(task_id_obj);#}
+                    RefreshGetProjectResult(task_id_obj.task_id);
+                });//end post
+            } else if (task_type == 'check'){
+                var data_list = {};
+                data_list['task_type'] = task_type;
+                data_list['csrfmiddlewaretoken'] = $("input[name='csrfmiddlewaretoken']").val();
+                data_list['projectID'] = {{ project_detail.id }}
+                $("#tab1-title,#tab-1").removeClass("active");
+                $("#tab3-title,#tab-3").addClass("active");
+                $("#tab2-title,#tab-2").removeClass("active");
+                $.post("{% url 'project_submit_task' %}", data_list, function(callback){
+                    task_id_obj = JSON.parse(callback);
+    {#                console.log(task_id_obj);#}
+                    RefreshGetProjectResult(task_id_obj.task_id);
+                });//end post
+            }
         }
 
         function RefreshGetProjectResult(task_id){

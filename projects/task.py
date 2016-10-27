@@ -22,10 +22,10 @@ class Task(object):
             else:
                 raise TypeError
 
+    @transaction.atomic
     def _ansible_task(self):
         try:
-            result = ansible_project_task.main(self.host_ip_list,self.ansible_module,self.ansible_args)    #执行项目任务事件
-            #print result
+            result = ansible_project_task.main(self.host_ip_list,self.ansible_module,self.ansible_args)    #执行ansible项目任务事件
             for bind_host_id in self.bind_hosts_user_id_list:                #执行事件结果存入数据库
                 obj = projects_models.ProjectTaskLogDetail.objects.get(child_of_task_id = self.task_obj.id,bind_host_id = bind_host_id,)
                 host_ip = hosts_models.BindHostToUser.objects.get(id=bind_host_id).host.lan_ip      #host_ip的type为unicode
@@ -50,11 +50,35 @@ class Task(object):
         except Exception,e:
             print e
 
-    @transaction.atomic     #函数执行完成后统一commit到数据库
-    def update(self):
-        project_id = self.request.POST.get("projectID")
+    @transaction.atomic          #函数执行完成后统一commit到数据库
+    def _insert_project_logs(self):
+        self.bind_hosts_user_id_list = []
+        self.host_ip_list = []
+        for bind_host in hosts_models.BindHostToGroup.objects.get(host_group=self.project_id).bind_hosts.all():
+            self.bind_hosts_user_id_list.append(bind_host.id)
+            self.host_ip_list.append(bind_host.host.lan_ip)
+        bind_hosts_user_id_list = set(self.bind_hosts_user_id_list)
+        self.task_obj = projects_models.ProjectTaskLog(
+            task_type = self.task_type,
+            user_id = self.request.user.id,
+            belong_to_project_id = self.project_id
+            #many to many 关系要创建记录后添加.
+        )
+        self.task_obj.save()
+        self.task_obj.hosts.add(*bind_hosts_user_id_list)    #多对多关系添加需要传入 *加id列表
+
+        for bind_host_id in bind_hosts_user_id_list:        #添加相关主机的操作记录
+            obj = projects_models.ProjectTaskLogDetail(
+                child_of_task_id = self.task_obj.id,
+                bind_host_id = bind_host_id,
+                event_log = '<img src="/static/css/plugins/jsTree/throbber.gif" alt="loadimage">',
+            )
+            obj.save()
+
+    def update(self):       #项目更新
+        self.project_id = self.request.POST.get("projectID")
         self.ansible_module = "script"       #ansible调用的模块
-        project_obj = projects_models.ProjectList.objects.get(id=project_id)
+        project_obj = projects_models.ProjectList.objects.get(id=self.project_id)
 
         project_title = project_obj.jetty_name
         project_info = project_obj.project_group.name
@@ -84,30 +108,22 @@ class Task(object):
                               ' '+ '"%s"'%CONFIG_FILE
 
         self.ansible_args = settings.ProjectUpdateScript + ansible_script_args               #ansible模块参数
-        self.bind_hosts_user_id_list = []
-        self.host_ip_list = []
-        for bind_host in hosts_models.BindHostToGroup.objects.get(host_group=project_id).bind_hosts.all():
-            self.bind_hosts_user_id_list.append(bind_host.id)
-            self.host_ip_list.append(bind_host.host.lan_ip)
-        bind_hosts_user_id_list = set(self.bind_hosts_user_id_list)
-        self.task_obj = projects_models.ProjectTaskLog(
-            task_type = self.task_type,
-            user_id = self.request.user.id,
-            belong_to_project_id = project_id
-            #many to many 关系要创建记录后添加.
-        )
+        self._insert_project_logs()         #创建任务记录信息
+        t = threading.Thread(target=self._ansible_task,args=())     #多线程执行ansible事件任务，解决函数阻塞问题，执行任务后任务结果入库
+        t.start()
+        return {'task_id':self.task_obj.id}
 
-        self.task_obj.save()
-        self.task_obj.hosts.add(*bind_hosts_user_id_list)    #多对多关系添加需要传入 *加id列表
-        for bind_host_id in bind_hosts_user_id_list:        #添加相关主机的操作记录
-            obj = projects_models.ProjectTaskLogDetail(
-                child_of_task_id = self.task_obj.id,
-                bind_host_id = bind_host_id,
-                event_log = '<img src="/static/css/plugins/jsTree/throbber.gif" alt="loadimage">',
-            )
-            obj.save()
-
-        t = threading.Thread(target=self._ansible_task,args=())     #多线程执行ansible事件任务，解决函数阻塞问题
+    def check(self):        #项目状态检测
+        self.project_id = self.request.POST.get("projectID")
+        self.ansible_module = "script"       #ansible调用的模块
+        project_obj = projects_models.ProjectList.objects.get(id=self.project_id)
+        project_title = project_obj.jetty_name
+        project_name = project_obj.jetty_root
+        ansible_script_args = ' '+ '%s'%project_title +\
+                              ' '+ '%s'%project_name
+        self.ansible_args = settings.ProjectCheckScript + ansible_script_args
+        self._insert_project_logs()     #创建任务记录信息
+        t = threading.Thread(target=self._ansible_task,args=())     #多线程执行ansible事件任务，解决函数阻塞问题，执行任务后任务结果入库
         t.start()
         return {'task_id':self.task_obj.id}
 

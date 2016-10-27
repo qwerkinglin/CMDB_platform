@@ -67,14 +67,14 @@ class ResultsCollector(CallbackBase):
 
 def main(host_list,module,args):
     Options = namedtuple('Options', ['connection','module_path', 'forks', 'remote_user',
-            'private_key_file', 'ssh_common_args', 'ssh_extra_args', 'sftp_extra_args',
+            'ssh_common_args', 'ssh_extra_args', 'sftp_extra_args',
             'scp_extra_args', 'become', 'become_method', 'become_user', 'verbosity', 'check'])
 
     # initialize needed objects
     variable_manager = VariableManager()
     loader = DataLoader()
     options = Options(connection='smart', module_path='xxx', forks=50,
-            remote_user='root', private_key_file=settings.Private_Key, ssh_common_args=None, ssh_extra_args=None,
+            remote_user='root', ssh_common_args=None, ssh_extra_args=None,
             sftp_extra_args=None, scp_extra_args=None, become=None, become_method=None,
             become_user=None, verbosity=None, check=False)
 
@@ -112,7 +112,7 @@ def main(host_list,module,args):
         if tqm is not None:
             tqm.cleanup()
 
-if __name__ == '__main__':          #测试用
+if __name__ == '__main__':          # test in commandlines
     host_list = []
     module = 'raw'
     args = 'ifconfig'
