@@ -22,5 +22,6 @@ def project_submit_task(request):
 def get_project_result(request):
     task_obj = task.Task(request)
     res = task_obj.get_project_result()
+    print res
     return HttpResponse(json.dumps(res,default=utils.json_date_handler))
 

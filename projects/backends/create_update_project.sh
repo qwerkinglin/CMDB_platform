@@ -98,6 +98,7 @@ function deploywar()
 {
     echo "********************************************************"
     echo -e "Ready for <<<Deploy>>> project!"
+    echo "********************************************************"
 
     cd $PROJECT_PATH/webapps/$project_name
     jar xf /root/$project_name.war
@@ -131,7 +132,7 @@ function startproject()
     #if [ $char == y ]; then
     echo "******************Start project info********************"
     /data/webapp/jetty-root.sh start $project_title
-
+    echo "******************Start project info********************"
     #fi
 }
 
@@ -266,9 +267,9 @@ function checkjettysh()
     fi
 }
 
-if [ $# != 1 ] ; then		#参数检测
-    echo "create_project.sh: at least 1 parameters"
-    echo "Syntax: create_project.sh [Project_ID]"
+if [ $# != 12 ] ; then		#参数检测
+    echo "create_project.sh: at least 12 parameters"
+    echo "Syntax: create_project.sh [project_title] [project_info] [project_name] [project_port] [mysql_server] [mysql_database] [mysql_user] [mysql_passwd] [mem_server] [mem_port] [PROJECT_PATH] [CONFIG_FILE]"
     exit 1;
 fi
 

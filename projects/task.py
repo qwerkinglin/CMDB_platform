@@ -41,7 +41,10 @@ class Task(object):
                 if 'msg' in result[host_ip]:
                     obj.event_log = result[host_ip]['msg']
                 else:
-                    obj.event_log = result[host_ip]['stdout']
+                    if result[host_ip]['stdout']:
+                        obj.event_log = result[host_ip]['stdout']
+                    else:
+                        obj.event_log = "no return information"
                 obj.result = script_result
                 obj.date = timezone.now()
                 obj.save()
